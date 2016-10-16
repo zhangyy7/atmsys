@@ -16,6 +16,9 @@ LOG_PATH = os.path.join(ATM_PATH, "log/credit/")
 
 
 def draw_cash(card_num, pwd, amount_of_money):
+    """
+    取现
+    """
     credit_acc = utils.load_file(DB_PATH + card_num + "/account.db")
     if credit_acc["state"] == 0:
         if pwd != credit_acc["pwd"]:
@@ -45,6 +48,9 @@ def draw_cash(card_num, pwd, amount_of_money):
 
 def credit_trade(from_num, opera_type, amount_total,
                  amount_credit, to_num=None):
+    """
+    记录流水
+    """
     opera_time = time.strftime('%Y-%m-%d %H:%M:%S')
     with open(DB_PATH + from_num + "/trade.db", "a+", encoding="utf-8") as f:
         f.write("\n%s,%s,%s,%s" % (opera_time, opera_type,
@@ -53,6 +59,7 @@ def credit_trade(from_num, opera_type, amount_total,
 
 def transfer_accounts(num, to_num, amount_of_money):
     """
+    转账
     """
     credit_acc = utils.load_file(DB_PATH + num + "/account.db")
     try:
@@ -88,6 +95,9 @@ def transfer_accounts(num, to_num, amount_of_money):
 
 
 def consume(card_num, card_pwd, amount_of_money):
+    """
+    消费
+    """
     credit_acc = utils.load_file(DB_PATH + card_num + "/account.db")
     if credit_acc["state"] == 0:
         if pwd != credit_acc["pwd"]:
@@ -106,6 +116,9 @@ def consume(card_num, card_pwd, amount_of_money):
 
 
 def repayment(card_num, amount_of_money):
+    """
+    还款
+    """
     credit_acc = utils.load_file(DB_PATH + card_num + "/account.db")
     amounts_owed = credit_acc[credit_total] - credit_acc[credit_balance]
     if amount_of_money >= amounts_owed:
@@ -120,6 +133,9 @@ def repayment(card_num, amount_of_money):
 
 
 def deposit(card_num, amount_of_money):
+    """
+    存款
+    """
     credit_acc = utils.load_file(DB_PATH + card_num + "/account.db")
     credit_acc["deposit"] += amount_of_money
     utils.dump_to_file(DB_PATH + card_num + "/account.db")
@@ -127,40 +143,10 @@ def deposit(card_num, amount_of_money):
 
 
 def billing_query(card_num):
+    """
+    账单查询
+    """
     credit_acc = utils.load_file(DB_PATH + card_num + "/account.db")
     credit_balance = credit_acc["credit_balance"]
     amounts_owed = credit_acc["credit_total"] - credit_acc["credit_balance"]
     return credit_balance, amounts_owed
-
-
-def create_account(card_num,
-
-
-
-
-                   username,
-                   role,
-                   credit_total=15000,
-                   pwd="12345",
-                   statement_date=settings.STATEMENT_DATE):
-    card_num = utils.to_num(card_num)
-    username_list = utils.load_file(DB_PATH + "/username.db")
-    if not card_num:
-        return "卡号必须是16位数字"
-    if username in username_list:
-        return "用户名已存在"
-    acc_path = DB_PATH + str(card_num)
-    mkdir_ret = utils.mkdir(acc_path)
-    if mkdir_ret:
-        return "账户已存在"
-    acc_info = {"num": card_num,
-                "username": username,
-                "role": role,
-                "credit_total": credit_total,
-                "credit_balance": credit_total,
-                "pwd": pwd,
-                "state": 0,
-                "deposit": 0}
-    utils.dump_to_file(acc_path + "/account.db", acc_info)
-    username_list.append(username)
-    utils.dump_to_file(DB_PATH + "/username.db", username_list)
