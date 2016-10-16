@@ -55,6 +55,6 @@ def mkdir(path):
 
 def encrypt(str, pwd=None):
     hash = hashlib.md5()
-    hash.update(bytes('str', encoding='utf-8'))
+    hash.update(bytes(str, encoding='utf-8'))
     value = hash.hexdigest()
     return value
