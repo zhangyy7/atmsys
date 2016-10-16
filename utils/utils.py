@@ -3,6 +3,7 @@
 import json
 import os
 import sys
+import hashlib
 
 
 def to_str(str_or_bytes):
@@ -50,3 +51,10 @@ def mkdir(path):
         return "账号已存在"
     else:
         os.makedirs(path)
+
+
+def encrypt(str, pwd=None):
+    hash = hashlib.md5()
+    hash.update(bytes('str', encoding='utf-8'))
+    value = hash.hexdigest()
+    return value
