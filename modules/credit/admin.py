@@ -12,6 +12,7 @@ sys.path.append(ATM_PATH)
 
 DB_PATH = os.path.join(ATM_PATH, "db/credit/")
 
+
 def create_account(card_num,
                    username,
                    role,
@@ -39,3 +40,9 @@ def create_account(card_num,
     utils.dump_to_file(acc_path + "/account.db", acc_info)
     username_list.append(username)
     utils.dump_to_file(DB_PATH + "/username.db", username_list)
+<<<<<<< HEAD
+=======
+    usersdate = utils.load_file(DB_PATH + "/usersdate.json")
+    usersdate[card_num] = statement_date
+    utils.dump(DB_PATH + "/usersdate.json", usersdate)
+>>>>>>> d4c975c9dbe432609db9f9d7a2cbc95495d832a1

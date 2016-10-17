@@ -7,7 +7,7 @@ import hashlib
 
 
 def to_str(str_or_bytes):
-    if isinstance(str_or_bytes,bytes):
+    if isinstance(str_or_bytes, bytes):
         value = str_or_bytes.decode("utf-8")
     else:
         value = str_or_bytes
@@ -58,3 +58,21 @@ def encrypt(str, pwd=None):
     hash.update(bytes(str, encoding='utf-8'))
     value = hash.hexdigest()
     return value
+
+
+def lastMonth(date):
+    year = date.year
+    month = date.month
+    day = date.day
+    if month == 1:
+        month = 12
+        year -= 1
+    else:
+        month -= 1
+    if day == 31 and month in (4, 6, 9, 11):
+        day = 30
+    if day > 28 and month == 2:
+        day = 29 if year % 4 == 0 else 28
+    result = datetime.datetime.strptime(
+        '%s-%s-%s' % (year, month, day), '%Y-%m-%d')
+    return result
