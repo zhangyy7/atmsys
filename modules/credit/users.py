@@ -46,17 +46,6 @@ def draw_cash(card_num, pwd, amount_of_money):
         return "您的账户已冻结"
 
 
-def credit_trade(from_num, opera_type, amount_total,
-                 amount_credit, to_num=None):
-    """
-    记录流水
-    """
-    opera_time = time.strftime('%Y-%m-%d %H:%M:%S')
-    with open(DB_PATH + from_num + "/trade.db", "a+", encoding="utf-8") as f:
-        f.write("\n%s,%s,%s,%s" % (opera_time, opera_type,
-                                   amount_total, amount_credit))
-
-
 def transfer_accounts(num, to_num, amount_of_money):
     """
     转账
@@ -94,7 +83,7 @@ def transfer_accounts(num, to_num, amount_of_money):
         return "余额不足！"
 
 
-def consume(card_num, card_pwd, amount_of_money):
+def spend(card_num, card_pwd, amount_of_money):
     """
     消费
     """
