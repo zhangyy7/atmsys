@@ -67,3 +67,8 @@ def charge_out():
 
 def calculate_interest(card_num):
     pass
+
+
+if __name__ == '__main__':
+    ret = charge_out()
+    print(ret)

@@ -4,6 +4,8 @@ import json
 import os
 import sys
 import hashlib
+import time
+import datetime
 
 
 def to_str(str_or_bytes):
@@ -60,7 +62,8 @@ def encrypt(str, pwd=None):
     return value
 
 
-def lastMonth(date):
+def get_lastmonth(date):
+    """获取上个月的今天"""
     year = date.year
     month = date.month
     day = date.day
@@ -69,10 +72,6 @@ def lastMonth(date):
         year -= 1
     else:
         month -= 1
-    if day == 31 and month in (4, 6, 9, 11):
-        day = 30
-    if day > 28 and month == 2:
-        day = 29 if year % 4 == 0 else 28
-    result = datetime.datetime.strptime(
-        '%s-%s-%s' % (year, month, day), '%Y-%m-%d')
-    return result
+    ndays = calendar.monthrange(year, month)[1]
+    last_month = date - datetime.timedelta(days=ndays)
+    return last_month
