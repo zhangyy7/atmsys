@@ -33,6 +33,7 @@ def charge_out():
     usersdate_dict = utils.load_file(DB_PATH + "/usersdate.json")
     pending_cardnum = usersdate_dict[str(TODAY.day)]
     last_month = utils.lastMonth(TODAY)
+    str_currentmonth = TODAY.strftime("%Y%m")
     str_lastmonth = last_month.strftime("%Y%m")
     if not pending_cardnum:
         return "今天没有要出账的账户"
@@ -41,4 +42,28 @@ def charge_out():
             bill_data = utils.load_file(DB_PATH + cardnum + "/bill.json")
             trade_data = utils.load_file(DB_PATH + cardnum + "/trade.json")
             if bill_data.get(str_lastmonth):
-                pass
+                last_bill = float(bill_data[str_lastmonth].get("bill"))
+            else:
+                last_bill = 0.00
+            repayment = 0.00
+            spend = 0.00
+            interest = 0.00
+            late = 0.00
+            for k in trade_data:
+                if trade_data[k]["trade_flag"] == "0":
+                    rtemp = float(trade_data[k]["amount"]) + \
+                        float(trade_data["commission"])
+                    repayment += temp
+                else:
+                    spend += float(trade_data[k]["amount"])
+            bill_data["str_currentmonth"]["bill"] = last_bill - \
+                repayment + spend + interest + late
+            bill_data["str_currentmonth"]["repayment"] = repayment
+            bill_data["str_currentmonth"]["spend"] = spend
+            bill_data["str_currentmonth"]["interest"] = interest
+            bill_data["str_currentmonth"]["late"] = late
+            utils.dump_to_file(DB_PATH + cardnum + "/bill.json", bill_data)
+
+
+def calculate_interest(card_num):
+    pass
