@@ -6,5 +6,7 @@
     "deposit": 0,
     "pwd": "12345",
     "state": 0,
-    "credit_balance": 12900.0
+    "credit_balance": 12900.0,
+    "STATEMENT_DATE": 22,
+    "REPAYMENT_DATE": 10
 }

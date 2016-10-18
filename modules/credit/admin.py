@@ -1,7 +1,6 @@
-import datetime
+import arrow
 import os
 import sys
-import time
 
 from conf import settings
 from utils import utils
@@ -21,6 +20,8 @@ def create_account(card_num,
                    statement_date=settings.STATEMENT_DATE):
     card_num = utils.to_num(card_num)
     username_list = utils.load_file(DB_PATH + "/username.db")
+    today = arrow.now()
+    repayment = today.replace(days=+48).format("DD")
     if not card_num:
         return "卡号必须是16位数字"
     if username in username_list:
@@ -36,13 +37,12 @@ def create_account(card_num,
                 "credit_balance": credit_total,
                 "pwd": pwd,
                 "state": 0,
-                "deposit": 0}
+                "deposit": 0,
+                "statement_date": statement_date,
+                "repayment_date": repayment}
     utils.dump_to_file(acc_path + "/account.db", acc_info)
     username_list.append(username)
     utils.dump_to_file(DB_PATH + "/username.db", username_list)
-<<<<<<< HEAD
-=======
     usersdate = utils.load_file(DB_PATH + "/usersdate.json")
     usersdate[card_num] = statement_date
     utils.dump(DB_PATH + "/usersdate.json", usersdate)
->>>>>>> d4c975c9dbe432609db9f9d7a2cbc95495d832a1
