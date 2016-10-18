@@ -10,8 +10,9 @@ from conf import settings
 from utils import utils
 
 
-DB_PATH = os.path.join(ATM_PATH, "db/credit/")
-USER_PATH = os.path.join(DB_PATH, "users/")
+DB_PATH = os.path.join(ATM_PATH, "db")
+CREDIT_PATH = os.path.join(DB_PATH, "credit")
+USER_PATH = os.path.join(CREDIT_PATH, "users")
 #print(DB_PATH, USER_PATH)
 def create_account(card_num,
                    username,
@@ -20,7 +21,7 @@ def create_account(card_num,
                    pwd="12345",
                    statement_date=settings.STATEMENT_DATE):
     card_num = utils.to_num(card_num)
-    username_list = utils.load_file(USER_PATH + "/username.json")
+    username_list = utils.acc(USER_PATH + "/username.json")
     today = arrow.now()
     repayment_date = today.replace(days=+settings.GRACE_PERIOD).format("DD")
     if not card_num:
@@ -48,7 +49,7 @@ def create_account(card_num,
     utils.dump_to_file(acc_path + "/account.json", acc_info)
     username_list.append(username)
     utils.dump_to_file(DB_PATH + "users/username.json", username_list)
-    usersdate = utils.load_file(DB_PATH + "users/usersdate.json")
+    usersdate = utils.acc(DB_PATH + "users/usersdate.json")
     usersdate[str(statement_date)].append(card_num)
     utils.dump_to_file(DB_PATH + "users/usersdate.json", usersdate)
 
