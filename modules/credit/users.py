@@ -40,7 +40,7 @@ def draw_cash(card_num, pwd, amount_of_money):
                     acc["deposit"] = 0
                     temp_final = temp + temp * settings.FETCH_MONEY_RATE
                     acc["credit_balance"] -= temp_final
-                    utils.dump_to_file(DB_PATH + card_num + "/account.db",
+                    utils.dump_to_file(acc_path,
                                        acc)
                     credit_trade(DB_PATH + card_num + "/trade.db", "credit",
                                  amount_of_money, temp_final)
@@ -92,20 +92,18 @@ def transfer_accounts(num, to_num, amount_of_money):
 
 
 def spend(card_num, card_pwd, amount_of_money):
-    """
-    消费
-    """
-    acc = utils.load_file(DB_PATH + card_num + "/account.db")
+    """消费"""
+    acc_path = os.path.join(USER_PATH, card_num, "account.json")
+    trade_path = os.path.join(USER_PATH, card_num, "trade.json")
+    acc = utils.load_file(acc_path)
     if acc["state"] == 0:
         if pwd != acc["pwd"]:
             return "支付密码不正确"
         else:
             if acc["credit_balance"] >= amount_of_money:
                 acc["credit_balance"] -= amount_of_money
-                utils.dump_to_file(DB_PATH + card_num +
-                                   "/account.db", acc)
-                credit_trade(DB_PATH + card_num + "/trade.db", "credit",
-                             amount_of_money, amount_of_money)
+                utils.dump_to_file(acc_path, acc)
+                system.recode_trade(card_num, "1", "1", amount_of_money)
             else:
                 return "额度不足"
     else:
@@ -113,40 +111,39 @@ def spend(card_num, card_pwd, amount_of_money):
 
 
 def repayment(card_num, amount_of_money):
-    """
-    还款
-    """
-    acc = utils.load_file(DB_PATH + card_num + "/account.db")
+    """还款"""
+    acc_path = os.path.join(USER_PATH, card_num, "account.json")
+    trade_path = os.path.join(USER_PATH, card_num, "trade.json")
+    acc = utils.load_file(acc_path)
     amounts_owed = acc[credit_total] - acc[credit_balance]
     if amount_of_money >= amounts_owed:
         acc[credit_balance] = acc[credit_total]
         acc[deposit] += (amount_of_money - amounts_owed)
-        utils.dump_to_file(DB_PATH + card_num + "/account.db", acc)
-        credit_trade(card_num, "repayment", amount_of_money, 0)
+        utils.dump_to_file(acc_path, acc)
     else:
         acc[credit_balance] += amount_of_money
-        utils.dump_to_file(DB_PATH + card_num + "/account.db", acc)
-        credit_trade(card_num, "repayment", amount_of_money, 0)
+        utils.dump_to_file(acc_path, acc)
+    system.recode_trade(card_num, "0", "0", amount_of_money)
 
 
 def deposit(card_num, amount_of_money):
-    """
-    存款
-    """
-    acc = utils.load_file(DB_PATH + card_num + "/account.db")
+    """存款"""
+    acc_path = os.path.join(USER_PATH, card_num, "account.json")
+    acc = utils.load_file(acc_path)
     acc["deposit"] += amount_of_money
-    utils.dump_to_file(DB_PATH + card_num + "/account.db")
-    credit_trade(card_num, "deposit", amount_of_money, 0)
+    utils.dump_to_file(acc_path, acc)
+    system.recode_trade(card_num, "0", "0", amount_of_money)
 
 
-def billing_query(card_num):
-    """
-    账单查询
-    """
-    acc = utils.load_file(DB_PATH + card_num + "/account.db")
-    credit_balance = acc["credit_balance"]
-    amounts_owed = acc["credit_total"] - acc["credit_balance"]
-    return credit_balance, amounts_owed
+def billing_query(card_num, date):
+    """账单查询"""
+    bill_path = os.path.join(USER_PATH, card_num, "bill.json")
+    bill = utils.load_file(bill_path)
+    bill_data = bill[date]
+    dept = bill_data["dept"]
+    repayment = bill_data["repayment"]
+    return dept, repayment
 
 
-transfer_accounts('6222123409580001', '6222123409580002', 560)
+result = deposit('6222123409580001', 780)
+print(result)
