@@ -1,6 +1,7 @@
 import arrow
 import os
 import sys
+import shutil
 ATM_PATH = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 # print(ATM_PATH)
@@ -19,7 +20,7 @@ USER_PATH = os.path.join(CREDIT_PATH, "users")
 def create_account(card_num,
                    username,
                    role,
-                   credit_total=15000,
+                   credit_total=settings.CREDIT_TOTAL,
                    pwd="12345",
                    statement_date=settings.STATEMENT_DATE):
     acc_path = os.path.join(USER_PATH, card_num, "account.json")
@@ -60,4 +61,37 @@ def create_account(card_num,
         utils.dump_to_file(name_path, username_list)
 
 
-create_account("6222123409580003", "zhang1", "user", statement_date=18)
+def del_account(card_num):
+    num_path = os.path.join(USER_PATH, card_num)
+    acc_path = os.path.join(num_path, "account.json")
+    #name_path = os.path.join(USER_PATH, "username.json")
+    sdate_path = os.path.join(USER_PATH, "usersdate.json")
+    acc = utils.load_file(acc_path)
+    #name_list = utils.load_file(name_path)
+    sdate = utils.load_file(sdate_path)
+    balance = acc["credit_balance"]
+    if balance < acc["credit_total"]:
+        return "该用户有欠款未还清，不能注销！"
+    else:
+        acc["state"] = 2
+        for d in sdate:
+            num_list = sdate[d]
+            if card_num in num_list:
+                num_list.remove(card_num)
+        utils.dump_to_file(acc_path, acc)
+        utils.dump_to_file(sdate_path, sdate)
+
+
+def modify_account(card_num, new_total=None, new_date=None, new_state=None):
+    acc_path = os.path.join(USER_PATH, card_num, "account.json")
+    acc = utils.load_file(acc_path)
+    if new_total:
+        temp = acc["credit_total"]
+        ran = new_total - temp
+        acc["credit_total"] = new_total
+        acc["credit_balance"] += ran
+    if new_date:
+        acc["STATEMENT_DATE"] = new_date
+    if state:
+        acc["state"] = new_state
+    utils.dump_to_file(acc_path)

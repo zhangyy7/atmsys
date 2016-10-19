@@ -1,20 +1,38 @@
 {
-    "2016-10-02 23:17:58": {
-        "trade_flag": "1",
+    "2016-10-14 10:56:31": {
         "opera_type": "1",
         "amount": 500,
+        "trade_flag": "1",
         "commission": 25
     },
-    "2016-10-14 10:56:31": {
-        "trade_flag": "1",
+    "2016-10-02 23:17:58": {
         "opera_type": "1",
         "amount": 500,
+        "trade_flag": "1",
         "commission": 25
+    },
+    "2016-10-19 16:41:58": {
+        "opera_type": "1",
+        "amount": 560,
+        "trade_flag": "1",
+        "commission": 28.0
     },
     "2016-10-14 10:59:16": {
-        "trade_flag": "1",
         "opera_type": "1",
         "amount": 500,
+        "trade_flag": "1",
         "commission": 25
+    },
+    "2016-10-19 16:51:08": {
+        "opera_type": "1",
+        "amount": 560,
+        "trade_flag": "1",
+        "commission": 21.0
+    },
+    "2016-10-19 16:48:46": {
+        "opera_type": "1",
+        "amount": 560,
+        "trade_flag": "1",
+        "commission": 28.0
     }
 }

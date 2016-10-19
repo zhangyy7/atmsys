@@ -2,14 +2,14 @@ import datetime
 import os
 import sys
 import time
-
+ATM_PATH = os.path.dirname(os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__))))
+# print(ATM_PATH)
+sys.path.append(ATM_PATH)
 from conf import settings
 from utils import utils
 import system
 
-ATM_PATH = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-# print(ATM_PATH)
-sys.path.append(ATM_PATH)
 
 DB_PATH = os.path.join(ATM_PATH, "db")
 CREDIT_PATH = os.path.join(DB_PATH, "credit")
@@ -33,7 +33,7 @@ def draw_cash(card_num, pwd, amount_of_money):
                 acc["deposit"] -= amount_of_money
                 utils.dump_to_file(acc_path, acc)
                 system.recode_trade(DB_PATH + card_num + "/trade.db", "credit",
-                             amount_of_money, 0)
+                                    amount_of_money, 0)
             else:
                 temp = amount_of_money - acc["deposit"]
                 if acc["credit_balance"] >= temp:
@@ -51,16 +51,19 @@ def draw_cash(card_num, pwd, amount_of_money):
 
 
 def transfer_accounts(num, to_num, amount_of_money):
-    """
-    转账
-    """
-    acc = utils.load_file(DB_PATH + num + "/account.db")
+    """转账"""
+    num_path = os.path.join(USER_PATH, num)
+    to_num_path = os.path.join(USER_PATH, to_num)
+    acc_path = os.path.join(num_path, "account.json")
+    to_acc_path = os.path.join(num_path, "account.json")
+    acc = utils.load_file(acc_path)
     try:
-        to_acc = utils.load_file(DB_PATH + to_num + "/account.db")
+        to_acc = utils.load_file(to_acc_path)
     except Exception as e:
         print(e)
     if acc["deposit"] + acc["credit_balance"] >= amount_of_money:
         temp = to_acc["credit_balance"] + amount_of_money
+        commission = 0
         if acc["deposit"] >= amount_of_money:
             acc["deposit"] -= amount_of_money
             if temp <= to_acc["credit_total"]:
@@ -72,17 +75,18 @@ def transfer_accounts(num, to_num, amount_of_money):
         else:
             temp2 = amount_of_money - acc["deposit"]
             acc["deposit"] = 0
-            acc["credit_balance"] -= temp2 + \
-                temp2 * settings.FETCH_MONEY_RATE
+            commission = temp2 * settings.FETCH_MONEY_RATE
+            acc["credit_balance"] -= temp2 + commission
             if temp <= to_acc["credit_total"]:
                 to_acc["credit_balance"] += amount_of_money
             else:
                 temp3 = temp - to_acc["credit_total"]
                 to_acc["credit_balance"] = to_acc["credit_total"]
                 to_acc["deposit"] += temp3
-        utils.dump_to_file(DB_PATH + num + "/account.db", acc)
-        utils.dump_to_file(DB_PATH + to_num + "/account.db", to_acc)
-        credit_trade()
+        utils.dump_to_file(acc_path, acc)
+        utils.dump_to_file(to_acc_path, to_acc)
+        system.recode_trade(num, "1", "1", amount_of_money, commission)
+        system.recode_trade(to_num, "0", "0", amount_of_money)
     else:
         return "余额不足！"
 
@@ -143,3 +147,6 @@ def billing_query(card_num):
     credit_balance = acc["credit_balance"]
     amounts_owed = acc["credit_total"] - acc["credit_balance"]
     return credit_balance, amounts_owed
+
+
+transfer_accounts('6222123409580001', '6222123409580002', 560)

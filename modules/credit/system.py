@@ -23,7 +23,12 @@ def recode_trade(card_num, trade_flag, opera_type, amount, commission=0):
     num_path = os.path.join(USER_PATH, card_num)
     trade_path = os.path.join(num_path, "trade.json")
     timenow = arrow.now().strftime("%Y-%m-%d %H:%M:%S")
-    trade = utils.load_file(trade_path)
+    if os.path.exists(trade_path):
+        trade = utils.load_file(trade_path)
+    else:
+        trade = dict()
+    # print(trade)
+    trade[timenow] = dict()
     trade[timenow]["trade_flag"] = trade_flag
     trade[timenow]["opera_type"] = opera_type
     trade[timenow]["amount"] = amount
@@ -82,9 +87,9 @@ def calculate_interest(card_num):
         trade_time = arrow.Arrow.strptime(k, "%Y-%m-%d %H:%M:%S")
         if lower_time < trade_time <= now_time:
             if trade_data[k]["trade_flag"] == "0":
-                repay = trade_data[k]["amount"] 
+                repay = trade_data[k]["amount"]
                 repay_total += repay
-    if repay_total < :
+    if repay_total < 0:
         if r_total / lastbill >= 0.1:
             interest = (lastbill - r_total) * settings.EXPIRE_DAY_RATE * ()
 
