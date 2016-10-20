@@ -1,7 +1,1 @@
-{
-    "201610": {
-        "dept": 0,
-        "repayment": 0,
-        "bill_time": "2016-10-18 23:57:43"
-    }
-}
+{"201609": {"repayment": 0, "dept": 100, "bill_time": "2016-10-18 23:57:43", "commission_flag": 0}}

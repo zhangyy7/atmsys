@@ -73,15 +73,19 @@ def calculate_interest(card_num):
     acc_path = os.path.join(num_path, "account.json")
     bill_path = os.path.join(num_path, "bill.json")
     trade_path = os.path.join(num_path, "trade.json")
+    print(trade_path)
     bill_data = utils.load_file(bill_path)
     trade_data = utils.load_file(trade_path)
     acc = utils.load_file(acc_path)
     statement_date = acc["STATEMENT_DATE"]
     now_time = arrow.now()
-    bill_date = now.replace(months=-1, day=statement_date)
+    bill_date = now_time.replace(months=-1, day=statement_date)
     bill_key = bill_date.format("YYYYMM")
-    lower_str = bill_data[bill_key]["bill_time"]
-    lower_time = arrow.Arrow.strptime(lower_str, "%Y-%m-%d %H:%M:%S")
+    if bill_data.get(bill_key):
+        lower_str = bill_data[bill_key]["bill_time"]
+        lower_time = arrow.Arrow.strptime(lower_str, "%Y-%m-%d %H:%M:%S")
+    else:
+        return "没有账单"
     repay_total = 0
     for k in trade_data:
         trade_time = arrow.Arrow.strptime(k, "%Y-%m-%d %H:%M:%S")
@@ -89,10 +93,39 @@ def calculate_interest(card_num):
             if trade_data[k]["trade_flag"] == "0":
                 repay = trade_data[k]["amount"]
                 repay_total += repay
-    if repay_total < 0:
-        if r_total / lastbill >= 0.1:
-            interest = (lastbill - r_total) * settings.EXPIRE_DAY_RATE * ()
+    last_dept = bill_data[bill_key]["dept"]
+    last_repayment = bill_data[bill_key]["repayment"]
+    startday = now_time.replace(months=-2, day=statement_date)
+    endday = now_time
+    days = endday - startday
+    #print(days.days)
+    if last_dept > 0:
+        if last_dept <= last_repayment:
+            return "已还清"
+        else:
+            commission = 0
+            interest = (last_dept - last_repayment) * \
+                settings.EXPIRE_DAY_RATE * days.days
+            #print(interest)
+            interest = round(interest,2)
+            #print(interest)
+            if repay_total / last_dept < 0.1:
+                if bill_data[bill_key]["commission_flag"] == 0:
+                    repay_min = last_dept * 0.1
+                    commission = (repay_min - repay_total) * 0.05
+            trade_key = now_time.strftime("%Y-%m-%d %H:%M:%S")
+            trade_data[trade_key] = dict()
+            trade_data[trade_key]["opera_type"] = "1"
+            trade_data[trade_key]["trade_flag"] = "1"
+            trade_data[trade_key]["amount"] = 0
+            trade_data[trade_key]["interest"] = interest
+            trade_data[trade_key]["commission"] = commission
+            utils.dump_to_file(bill_path, bill_data)
+            utils.dump_to_file(trade_path, trade_data)
+    else:
+        return "欠款为0"
+
 
 if __name__ == '__main__':
-    ret = charge_out()
+    ret = calculate_interest("6222123409580001")
     print(ret)
