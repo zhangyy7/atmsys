@@ -1,1 +1,12 @@
-{"credit_total": 15000, "credit_balance": 15000, "deposit": 1480.0, "REPAYMENT_DATE": 10, "STATEMENT_DATE": 22, "state": 0, "pwd": "12345", "role": "user", "username": "zhangyy", "num": 6222123409580001}
+{
+    "num": 6222123409580001,
+    "pwd": "12345",
+    "state": 0,
+    "deposit": 2260.0,
+    "credit_balance": 15000,
+    "credit_total": 15000,
+    "role": "user",
+    "username": "zhangyy",
+    "REPAYMENT_DATE": 10,
+    "STATEMENT_DATE": 22
+}

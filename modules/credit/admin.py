@@ -2,6 +2,7 @@ import arrow
 import os
 import sys
 import shutil
+import getpass
 import auth
 ATM_PATH = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
@@ -28,7 +29,7 @@ def login_page():
     menu = "欢迎来到管理员登录页面"
     print(menu)
     inp_user = input("请输入管理员账号：")
-    inp_pwd = input("请输入您的密码：")
+    inp_pwd = getpass.getpass("请输入您的密码：")
     return login(inp_user, inp_pwd)
 
 
@@ -47,17 +48,22 @@ def login(username, password):
     #print(ad_info)
     password = utils.encrypt(password)
     if ad_info.get(username):
-        if password == ad_info[username]["password"]:
-            ADMIN_INFO["username"] = username
-            ADMIN_INFO["login_flag"] = 1
-            return ADMIN_INFO
-        elif ADMIN_INFO["err_list"].count(username) == 3:
-            return lock(username)
+        if ad_info[username]["lock_flag"] == 0:
+            if password == ad_info[username]["password"]:
+                ADMIN_INFO["username"] = username
+                ADMIN_INFO["login_flag"] = 1
+                return ADMIN_INFO
+            elif ADMIN_INFO["err_list"].count(username) == 3:
+                return lock(username)
+            else:
+                ADMIN_INFO["err_list"].append(username)
+                print("用户名或密码不正确，请重新输入！")
+                return login_page()
         else:
-            ADMIN_INFO["err_list"].append(username)
-            return login_page()
+            print("您的账户已锁定。")
+            return "已锁定！"
     else:
-        print("已锁定")
+        print("用户不存在")
         return login_page()
 
 
@@ -76,7 +82,7 @@ def create_account(card_num,
                    username,
                    role,
                    credit_total=settings.CREDIT_TOTAL,
-                   pwd="12345",
+                   pwd=settings.DEFAULT_PWD,
                    statement_date=settings.STATEMENT_DATE):
     acc_path = os.path.join(USER_PATH, card_num, "account.json")
     name_path = os.path.join(USER_PATH, "username.json")
@@ -87,7 +93,6 @@ def create_account(card_num,
     today = arrow.now()
     card_num = utils.to_num(card_num)
     repayment_date = today.replace(days=+settings.GRACE_PERIOD).format("DD")
-
     if not card_num:
         # print("卡号必须是16位数字")
         return "卡号必须是16位数字"
@@ -104,7 +109,7 @@ def create_account(card_num,
                     "role": role,
                     "credit_total": credit_total,
                     "credit_balance": credit_total,
-                    "pwd": pwd,
+                    "pwd": utils.encrypt(pwd),
                     "state": 0,
                     "deposit": 0,
                     "statement_date": statement_date,
@@ -123,6 +128,7 @@ def create_account(card_num,
         utils.dump_to_file(card_path, card)
 
 
+@auth.auth(check_login)
 def del_account(card_num):
     num_path = os.path.join(USER_PATH, card_num)
     acc_path = os.path.join(num_path, "account.json")
@@ -144,6 +150,7 @@ def del_account(card_num):
         utils.dump_to_file(sdate_path, sdate)
 
 
+@auth.auth(check_login)
 def modify_account(card_num, new_total=None, new_date=None, new_state=None):
     acc_path = os.path.join(USER_PATH, card_num, "account.json")
     acc = utils.load_file(acc_path)
@@ -160,6 +167,6 @@ def modify_account(card_num, new_total=None, new_date=None, new_state=None):
 
 
 if __name__ == "__main__":
-    create_account("6222123409580005",
-                   "zhangyy5",
+    create_account("6222123409580004",
+                   "zhangyy4",
                    "user")

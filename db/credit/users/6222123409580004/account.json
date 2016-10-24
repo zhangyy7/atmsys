@@ -1,5 +1,12 @@
-<<<<<<< HEAD
-{"state": 0, "statement_date": 22, "username": "zhangyy2", "role": "user", "num": 6222123409580004, "pwd": "12345", "credit_total": 15000, "deposit": 0, "credit_balance": 15000, "repayment_date": "07"}
-=======
-{"statement_date": 22, "num": 6222123409580004, "credit_balance": 15000, "pwd": "12345", "role": "user", "repayment_date": "09", "username": "zhangyy3", "state": 0, "credit_total": 15000, "deposit": 0}
->>>>>>> 1c2624588fa49cba519f35f042d69ef9941ee15a
+{
+    "credit_balance": 15000,
+    "pwd": "827ccb0eea8a706c4c34a16891f84e7b",
+    "repayment_date": "11",
+    "deposit": 780,
+    "num": 6222123409580004,
+    "role": "user",
+    "username": "zhangyy4",
+    "credit_total": 15000,
+    "statement_date": 22,
+    "state": 0
+}
