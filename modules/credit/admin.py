@@ -59,6 +59,13 @@ def create_account(card_num,
         utils.dump_to_file(sdate_path, usersdate)
         utils.dump_to_file(acc_path, acc_info)
         utils.dump_to_file(name_path, username_list)
+        card_path = os.path.join(USER_PATH, "card.json")
+        if os.path.exists(card_path):
+            card = utils.load_file(card_path)
+        else:
+            card = list()
+        card.append(card_num)
+        utils.dump_to_file(card_path, card)
 
 
 def del_account(card_num):
@@ -95,3 +102,6 @@ def modify_account(card_num, new_total=None, new_date=None, new_state=None):
     if state:
         acc["state"] = new_state
     utils.dump_to_file(acc_path)
+
+
+create_account("6222123409580004", "zhangyy2", "user")

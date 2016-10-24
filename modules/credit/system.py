@@ -98,7 +98,7 @@ def calculate_interest(card_num):
     startday = now_time.replace(months=-2, day=statement_date)
     endday = now_time
     days = endday - startday
-    #print(days.days)
+    # print(days.days)
     if last_dept > 0:
         if last_dept <= last_repayment:
             return "已还清"
@@ -106,9 +106,9 @@ def calculate_interest(card_num):
             commission = 0
             interest = (last_dept - last_repayment) * \
                 settings.EXPIRE_DAY_RATE * days.days
-            #print(interest)
-            interest = round(interest,2)
-            #print(interest)
+            # print(interest)
+            interest = round(interest, 2)
+            # print(interest)
             if repay_total / last_dept < 0.1:
                 if bill_data[bill_key]["commission_flag"] == 0:
                     repay_min = last_dept * 0.1
