@@ -159,11 +159,7 @@ def modify_account(card_num, new_total=None, new_date=None, new_state=None):
     utils.dump_to_file(acc_path)
 
 
-<<<<<<< HEAD
-create_account("6222123409580004", "zhangyy2", "user")
-=======
 if __name__ == "__main__":
     create_account("6222123409580005",
                    "zhangyy5",
                    "user")
->>>>>>> 1c2624588fa49cba519f35f042d69ef9941ee15a
