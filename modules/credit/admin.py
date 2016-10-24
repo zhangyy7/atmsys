@@ -2,6 +2,7 @@ import arrow
 import os
 import sys
 import shutil
+import auth
 ATM_PATH = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 # print(ATM_PATH)
@@ -16,7 +17,61 @@ CREDIT_PATH = os.path.join(DB_PATH, "credit")
 USER_PATH = os.path.join(CREDIT_PATH, "users")
 # print(DB_PATH, USER_PATH)
 
+ADMIN_INFO = {
+    "username": None,
+    "login_flag": 0,
+    "err_list": []
+}
 
+
+def login_page():
+    menu = "欢迎来到管理员登录页面"
+    print(menu)
+    inp_user = input("请输入管理员账号：")
+    inp_pwd = input("请输入您的密码：")
+    return login(inp_user, inp_pwd)
+
+
+def check_login():
+    global ADMIN_INFO
+    if ADMIN_INFO["username"] and ADMIN_INFO["login_flag"]:
+        return
+    else:
+        return login_page()
+
+
+def login(username, password):
+    global ADMIN_INFO
+    admin_path = os.path.join(DB_PATH, "credit", "admin", "admin.json")
+    ad_info = utils.load_file(admin_path)
+    #print(ad_info)
+    password = utils.encrypt(password)
+    if ad_info.get(username):
+        if password == ad_info[username]["password"]:
+            ADMIN_INFO["username"] = username
+            ADMIN_INFO["login_flag"] = 1
+            return ADMIN_INFO
+        elif ADMIN_INFO["err_list"].count(username) == 3:
+            return lock(username)
+        else:
+            ADMIN_INFO["err_list"].append(username)
+            return login_page()
+    else:
+        print("已锁定")
+        return login_page()
+
+
+def lock(username):
+    ad_path = os.path.join(DB_PATH, "credit", "admin", "admin.json")
+    ad_info = utils.load_file(ad_path)
+    if ad_info.get(username):
+        ad_info[username]["lock_flag"] = 1
+        utils.dump_to_file(ad_path, ad_info)
+    else:
+        return "不存在此管理员"
+
+
+@auth.auth(check_login)
 def create_account(card_num,
                    username,
                    role,
@@ -104,4 +159,11 @@ def modify_account(card_num, new_total=None, new_date=None, new_state=None):
     utils.dump_to_file(acc_path)
 
 
+<<<<<<< HEAD
 create_account("6222123409580004", "zhangyy2", "user")
+=======
+if __name__ == "__main__":
+    create_account("6222123409580005",
+                   "zhangyy5",
+                   "user")
+>>>>>>> 1c2624588fa49cba519f35f042d69ef9941ee15a

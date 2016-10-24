@@ -1,0 +1,10 @@
+{
+    "admin1": {
+        "password": "827ccb0eea8a706c4c34a16891f84e7b",
+        "email": "xxoo@163.com",
+        "tel": "13900000000",
+        "username": "admin1",
+        "role": "superuser",
+        "lock_flag": 0
+    }
+}
