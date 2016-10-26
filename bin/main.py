@@ -4,14 +4,16 @@ import json
 import os
 import sys
 
-from conf import settings
+from conf import settings, templates
 from modules import credit
 from utils import utils
 
 MY_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(MY_PATH)
 
+PAGE_DICT = {
+    "1": "show_shop",
+    "2": "index_atm",
+    "3": "index_admin"
 
-def main():
-    ret = credit.draw_cash("6222123409580001", "12345", 500)
-    print(ret)
+}
