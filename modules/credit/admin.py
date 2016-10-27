@@ -1,14 +1,14 @@
 import arrow
 import os
 import sys
-import shutil
 import getpass
-import auth
+
 ATM_PATH = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 # print(ATM_PATH)
 # print(os.path.isabs(ATM_PATH))
 sys.path.append(ATM_PATH)
+from modules.credit import auth
 from conf import settings
 from utils import utils
 

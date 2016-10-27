@@ -1,10 +1,19 @@
 #!/usr/bin/env python
 # --coding: utf-8 --
-import arrow
-
 """
 系统菜单模板
 """
+import os
+import sys
+import arrow
+
+MY_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(MY_PATH)
+
+from conf import settings
+from modules.credit import users, admin, auth
+from utils import utils
+
 
 # 主菜单
 INDEX_MEMU = """
@@ -13,7 +22,7 @@ INDEX_MEMU = """
 
 {0}                                        今天 {1}   星期{2}
 -------------------------------------------------------------------------
-        【1】进入商城 【2】信用卡中心 【3】后台管理 【4】退出系统
+        【1】进入商城 【2】信用卡中心 【4】退出系统
 """
 
 # 商城用户中心
@@ -34,7 +43,7 @@ INDEX_ATM = """
 
 
 ------------------------------------------------------------------------------
-【1】我的信用卡    【2】提现    【3】转账     【4】还款    【5】返回
+        【1】提现    【2】转账    【3】还款   【4】返回
 """
 
 # 信用卡后台管理
@@ -48,15 +57,8 @@ INDEX_ADMIN = """
 【1】创建用户    【2】删除用户    【3】解锁用户   【5】冻结信用卡  【0】退出后台管理
 """
 
-PAGE_DICT = {
-    "1": INDEX_MEMU,
-    "2": SHOP_USER_CENTER,
-    "3": INDEX_ATM,
-    "4": INDEX_ADMIN
-}
 
-
-def show_page(page_num="1"):
+def format_page(page):
     """
     导航页面
     """
@@ -74,5 +76,5 @@ def show_page(page_num="1"):
     ymd = now.strftime("%Y-%m-%d")
     wday = now.isoweekday()
     wday = week_day[wday]
-    f_page = PAGE_DICT[page_num].format(hmm, ymd, wday)
-    print(f_page)
+    f_page = page.format(hmm, ymd, wday)
+    return f_page

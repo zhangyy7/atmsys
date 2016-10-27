@@ -1,22 +1,21 @@
-import datetime
 import os
 import sys
-import time
-import auth
+
 ATM_PATH = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 # print(ATM_PATH)
 sys.path.append(ATM_PATH)
+from modules.credit import auth
 from conf import settings
 from utils import utils
-import system
+from modules.credit import system
 
 
 DB_PATH = os.path.join(ATM_PATH, "db")
 CREDIT_PATH = os.path.join(DB_PATH, "credit")
 USER_PATH = os.path.join(CREDIT_PATH, "users")
 # print(DB_PATH)
-#LOG_PATH = os.path.join(ATM_PATH, "log/credit/")
+# LOG_PATH = os.path.join(ATM_PATH, "log/credit/")
 
 USER_INFO = {
     "username": None,
@@ -45,7 +44,8 @@ def login(username, password):
     global USER_INFO
     num_path = os.path.join(DB_PATH, "credit", "users", username)
     if os.path.exists(num_path):
-        acc_path = os.path.join(DB_PATH, "credit", "users", username, "account.json")
+        acc_path = os.path.join(
+            DB_PATH, "credit", "users", username, "account.json")
     else:
         return "账户不存在"
     acc_info = utils.load_file(acc_path)
@@ -65,7 +65,8 @@ def login(username, password):
 def lock(username):
     num_path = os.path.join(DB_PATH, "credit", "users", username)
     if os.path.exists(num_path):
-        acc_path = os.path.join(DB_PATH, "credit", "users", username, "account.json")
+        acc_path = os.path.join(
+            DB_PATH, "credit", "users", username, "account.json")
     else:
         return "账户不存在"
     acc_info = utils.load_file(acc_path)
@@ -206,5 +207,5 @@ def billing_query(card_num, date):
     return dept, repayment
 
 
-result = deposit('6222123409580004', 780)
-print(result)
+# result = deposit('6222123409580004', 780)
+# print(result)
