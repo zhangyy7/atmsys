@@ -5,34 +5,28 @@
 """
 import os
 import sys
-
 MY_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(MY_PATH)
-
-from conf import settings
-from modules.credit import users, admin, auth
-from utils import utils
+from api import credit_api
 
 
 def show(page_num):
     num_func = {
-        "1": users.draw_cash,
-        "2": users.transfer_accounts,
-        "3": users.repayment
+        "1": {"module": credit_api, "func": "draw_api"},
+        "2": {"module": credit_api, "func": "transfer_api"},
+        "3": {"module": credit_api, "func": "repayment"}
     }
+    a = hasattr(credit_api, "draw_api")
+    print(a)
+    if hasattr(num_func[page_num]["module"], num_func[page_num]["func"]):
+        obj = getattr(num_func[page_num]["module"], num_func[page_num]["func"])
+        if callable(obj):
+            result = obj()
+            return result
+        else:
+            print(obj)
+    else:
+        print("404")
 
-    if hasattr(users, num_func[page_num]):
-        func = getattr(users, num_func[page_num])
-        func()
-    return f_page
 
-
-def draw_api():
-    inp_amount = input("请输入取现金额>>>")
-    inp_pwd = input("请输入取款密码>>>")
-    card_num = users.USER_INFO["username"]
-    users.draw_cash(card_num, inp_pwd, inp_amount)
-
-
-def main():
-    pass
+show("1")

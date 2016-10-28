@@ -49,7 +49,7 @@ def login(username, password):
     else:
         return "账户不存在"
     acc_info = utils.load_file(acc_path)
-    #print(acc_info)
+#   print(acc_info)
     password = utils.encrypt(password)
     if password == acc_info["pwd"]:
         USER_INFO["username"] = username
@@ -75,10 +75,12 @@ def lock(username):
 
 
 @auth.auth(check_login)
-def draw_cash(card_num, pwd, amount_of_money):
+def draw_cash(pwd, amount_of_money):
     """
     取现
     """
+    global USER_INFO
+    card_num = USER_INFO["username"]
     acc_path = os.path.join(USER_PATH, card_num)
     acc_path = os.path.join(acc_path, "account.json")
     acc = utils.load_file(acc_path)
@@ -108,8 +110,10 @@ def draw_cash(card_num, pwd, amount_of_money):
 
 
 @auth.auth(check_login)
-def transfer_accounts(num, to_num, amount_of_money):
+def transfer_accounts(to_num, amount_of_money):
     """转账"""
+    global USER_INFO
+    num = USER_INFO["username"]
     acc_path = os.path.join(USER_PATH, num)
     to_acc_path = os.path.join(USER_PATH, to_num)
     acc_path = os.path.join(acc_path, "account.json")
@@ -156,7 +160,7 @@ def spend(card_num, card_pwd, amount_of_money):
     trade_path = os.path.join(USER_PATH, card_num, "trade.json")
     acc = utils.load_file(acc_path)
     if acc["state"] == 0:
-        if pwd != acc["pwd"]:
+        if card_pwd != acc["pwd"]:
             return "支付密码不正确"
         else:
             if acc["credit_balance"] >= amount_of_money:
