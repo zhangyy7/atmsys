@@ -15,5 +15,4 @@ PAGE_DICT = {
     "1": "show_shop",
     "2": "index_atm",
     "3": "index_admin"
-
 }

@@ -29,4 +29,4 @@ def show(page_num):
         print("404")
 
 
-show("1")
+# show("1")

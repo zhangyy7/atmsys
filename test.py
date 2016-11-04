@@ -1,16 +1,14 @@
-#!/usr/bin/env python
-# -*- coding:utf-8 -*-
+import socket
 
-import json
-import arrow
+server = socket.socket()
+server.bind(("localhost", 9999))
+server.listen()
 
-if __name__ == '__main__':
-    now = arrow.now().for_json()
-    dic = {now:"1"}
-    with open("test.json","w") as f:
-        json.dump(now, f)
+print("我要开始等电话了")
+conn, addr = server.accept()
+print(conn, addr)
+print("我要开始等电话了")
+data = conn.recv(1024)
+conn.send(data.upper())
 
-    with open("test.json") as f:
-        obj = json.load(f)
-        t = arrow.Arrow.strptime(obj,'%Y-%m-%d %H:%M:%S')
-        print(t)
+server.close()
