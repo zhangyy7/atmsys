@@ -16,8 +16,8 @@ def show(page_num):
         "2": {"module": credit_api, "func": "transfer_api"},
         "3": {"module": credit_api, "func": "repayment"}
     }
-    #a = hasattr(credit_api, "draw_api")
-    #print(a)
+    # a = hasattr(credit_api, "draw_api")
+    # print(a)
     if hasattr(num_func[page_num]["module"], num_func[page_num]["func"]):
         obj = getattr(num_func[page_num]["module"], num_func[page_num]["func"])
         if callable(obj):

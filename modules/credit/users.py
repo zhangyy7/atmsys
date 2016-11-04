@@ -47,14 +47,15 @@ def login(username, password):
         acc_path = os.path.join(
             DB_PATH, "credit", "users", username, "account.json")
     else:
-        return "账户不存在"
+        return check_login()
     acc_info = utils.load_file(acc_path)
 #   print(acc_info)
     password = utils.encrypt(password)
     if password == acc_info["pwd"]:
         USER_INFO["username"] = username
         USER_INFO["login_flag"] = 1
-        return USER_INFO
+        print("登录成功")
+        # return USER_INFO
     elif USER_INFO["err_list"].count(username) == 3:
         return lock(username)
     else:
@@ -81,29 +82,34 @@ def draw_cash(pwd, amount_of_money):
     """
     global USER_INFO
     card_num = USER_INFO["username"]
+    print(card_num)
     if card_num:
         num_path = os.path.join(USER_PATH, card_num)
         acc_path = os.path.join(num_path, "account.json")
+        trade_path = os.path.join(num_path, "trade.json")
         acc = utils.load_file(acc_path)
         if acc["state"] == 0:
-            if pwd != acc["pwd"]:
+            print("状态正常")
+            if utils.encrypt(pwd) != acc["pwd"]:
+                print("取款密码不正确")
                 return "取款密码不正确"
             else:
+                print("密码正确")
+                amount_of_money = float(amount_of_money)
                 if amount_of_money <= acc["deposit"]:
                     acc["deposit"] -= amount_of_money
                     utils.dump_to_file(acc_path, acc)
-                    system.recode_trade(DB_PATH + card_num + "/trade.db", "credit",
-                                        amount_of_money, 0)
+                    print("账户修改成功")
+                    system.recode_trade(card_num, "1", "1", amount_of_money, 0)
                 else:
                     temp = amount_of_money - acc["deposit"]
                     if acc["credit_balance"] >= temp:
                         acc["deposit"] = 0
                         temp_final = temp + temp * settings.FETCH_MONEY_RATE
                         acc["credit_balance"] -= temp_final
-                        utils.dump_to_file(acc_path,
-                                           acc)
-                        system.credit_trade(DB_PATH + card_num + "/trade.db",
-                                            "credit", amount_of_money, temp_final)
+                        utils.dump_to_file(acc_path, acc)
+                        system.recode_trade(
+                            card_num, "1", "1", amount_of_money, temp_final)
                     else:
                         return "额度不足"
         else:

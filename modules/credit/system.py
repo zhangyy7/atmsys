@@ -1,15 +1,15 @@
-import datetime
 import os
 import sys
-import time
+
 import arrow
+
+from conf import settings
+from utils import utils
+
 ATM_PATH = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 # print(ATM_PATH)
 sys.path.append(ATM_PATH)
-
-from conf import settings
-from utils import utils
 
 
 DB_PATH = os.path.join(ATM_PATH, "db")
@@ -33,6 +33,7 @@ def recode_trade(card_num, trade_flag, opera_type, amount, commission=0):
     trade[timenow]["opera_type"] = opera_type
     trade[timenow]["amount"] = amount
     trade[timenow]["commission"] = commission
+    print(trade_path)
     utils.dump_to_file(trade_path, trade)
 
 
