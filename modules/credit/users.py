@@ -81,32 +81,33 @@ def draw_cash(pwd, amount_of_money):
     """
     global USER_INFO
     card_num = USER_INFO["username"]
-    acc_path = os.path.join(USER_PATH, card_num)
-    acc_path = os.path.join(acc_path, "account.json")
-    acc = utils.load_file(acc_path)
-    if acc["state"] == 0:
-        if pwd != acc["pwd"]:
-            return "取款密码不正确"
-        else:
-            if amount_of_money <= acc["deposit"]:
-                acc["deposit"] -= amount_of_money
-                utils.dump_to_file(acc_path, acc)
-                system.recode_trade(DB_PATH + card_num + "/trade.db", "credit",
-                                    amount_of_money, 0)
+    if card_num:
+        num_path = os.path.join(USER_PATH, card_num)
+        acc_path = os.path.join(num_path, "account.json")
+        acc = utils.load_file(acc_path)
+        if acc["state"] == 0:
+            if pwd != acc["pwd"]:
+                return "取款密码不正确"
             else:
-                temp = amount_of_money - acc["deposit"]
-                if acc["credit_balance"] >= temp:
-                    acc["deposit"] = 0
-                    temp_final = temp + temp * settings.FETCH_MONEY_RATE
-                    acc["credit_balance"] -= temp_final
-                    utils.dump_to_file(acc_path,
-                                       acc)
-                    credit_trade(DB_PATH + card_num + "/trade.db", "credit",
-                                 amount_of_money, temp_final)
+                if amount_of_money <= acc["deposit"]:
+                    acc["deposit"] -= amount_of_money
+                    utils.dump_to_file(acc_path, acc)
+                    system.recode_trade(DB_PATH + card_num + "/trade.db", "credit",
+                                        amount_of_money, 0)
                 else:
-                    return "额度不足"
-    else:
-        return "您的账户已冻结"
+                    temp = amount_of_money - acc["deposit"]
+                    if acc["credit_balance"] >= temp:
+                        acc["deposit"] = 0
+                        temp_final = temp + temp * settings.FETCH_MONEY_RATE
+                        acc["credit_balance"] -= temp_final
+                        utils.dump_to_file(acc_path,
+                                           acc)
+                        system.credit_trade(DB_PATH + card_num + "/trade.db",
+                                            "credit", amount_of_money, temp_final)
+                    else:
+                        return "额度不足"
+        else:
+            return "您的账户已冻结"
 
 
 @auth.auth(check_login)
