@@ -75,3 +75,15 @@ def format_page(page):
     wday = week_day[wday]
     f_page = page.format(hmm, ymd, wday)
     return f_page
+
+
+def show_index():
+    chioce = input("{}>>".format(format_page(INDEX_MEMU)))
+    return chioce
+
+
+def show_page(chioce):
+
+
+if __name__ == "__main__":
+    show_index()
