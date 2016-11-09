@@ -5,9 +5,11 @@
 """
 import os
 import sys
+
+from api import credit_api
+
 MY_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(MY_PATH)
-from api import credit_api
 
 
 def show(page_num):

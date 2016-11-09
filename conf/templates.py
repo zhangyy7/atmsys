@@ -82,8 +82,24 @@ def show_index():
     return chioce
 
 
+def show_atm():
+    choice = input("{}>>".format(format_page(INDEX_ATM)))
+    return choice
+
+
+def show_shop():
+    choice = input("{}>>".format(format_page(INDEX_ATM)))
+    return choice
+
+
 def show_page(chioce):
-
-
-if __name__ == "__main__":
-    show_index()
+    page = {
+        "1": show_shop,
+        "2": show_atm
+    }
+    func = page.get(chioce)
+    # print(k)
+    if func:
+        func()
+    else:
+        print("404")

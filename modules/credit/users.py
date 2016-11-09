@@ -86,7 +86,6 @@ def draw_cash(pwd, amount_of_money):
     if card_num:
         num_path = os.path.join(USER_PATH, card_num)
         acc_path = os.path.join(num_path, "account.json")
-        trade_path = os.path.join(num_path, "trade.json")
         acc = utils.load_file(acc_path)
         if acc["state"] == 0:
             print("状态正常")
@@ -164,7 +163,6 @@ def transfer_accounts(to_num, amount_of_money):
 def spend(card_num, card_pwd, amount_of_money):
     """消费"""
     acc_path = os.path.join(USER_PATH, card_num, "account.json")
-    trade_path = os.path.join(USER_PATH, card_num, "trade.json")
     acc = utils.load_file(acc_path)
     if acc["state"] == 0:
         if card_pwd != acc["pwd"]:
@@ -184,15 +182,14 @@ def spend(card_num, card_pwd, amount_of_money):
 def repayment(card_num, amount_of_money):
     """还款"""
     acc_path = os.path.join(USER_PATH, card_num, "account.json")
-    trade_path = os.path.join(USER_PATH, card_num, "trade.json")
     acc = utils.load_file(acc_path)
-    amounts_owed = acc[credit_total] - acc[credit_balance]
+    amounts_owed = acc["credit_total"] - acc["credit_balance"]
     if amount_of_money >= amounts_owed:
-        acc[credit_balance] = acc[credit_total]
+        acc["credit_balance"] = acc["credit_total"]
         acc[deposit] += (amount_of_money - amounts_owed)
         utils.dump_to_file(acc_path, acc)
     else:
-        acc[credit_balance] += amount_of_money
+        acc["credit_balance"] += amount_of_money
         utils.dump_to_file(acc_path, acc)
     system.recode_trade(card_num, "0", "0", amount_of_money)
 

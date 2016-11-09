@@ -17,3 +17,9 @@ def transfer_api():
     inp_to_num = input("请输入目标账号（卡号）>>>")
     inp_amount = input("请输入转账金额>>>")
     users.transfer_accounts(inp_to_num, inp_amount)
+
+
+def repayment_api():
+    inp_cardnum = input("请输入卡号：>>")
+    inp_amount = input("请输入还款金额：>>")
+    users.repayment(inp_cardnum, inp_amount)
