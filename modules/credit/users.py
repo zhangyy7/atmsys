@@ -43,7 +43,7 @@ def check_login():
 def login(username, password):
     global USER_INFO
     num_path = os.path.join(DB_PATH, "credit", "users", username)
-    if os.path.exists(num_path):
+    if os.path.exists(num_path) and username:
         acc_path = os.path.join(
             DB_PATH, "credit", "users", username, "account.json")
     else:

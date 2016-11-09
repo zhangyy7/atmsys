@@ -100,6 +100,6 @@ def show_page(chioce):
     func = page.get(chioce)
     # print(k)
     if func:
-        func()
+        return func()
     else:
         print("404")

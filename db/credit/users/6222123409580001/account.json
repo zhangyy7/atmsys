@@ -1,12 +1,1 @@
-{
-    "STATEMENT_DATE": 22,
-    "role": "user",
-    "credit_total": 15000,
-    "state": 0,
-    "pwd": "827ccb0eea8a706c4c34a16891f84e7b",
-    "num": 6222123409580001,
-    "credit_balance": 15000,
-    "REPAYMENT_DATE": 10,
-    "username": "zhangyy",
-    "deposit": 260.0
-}
+{"credit_balance": 14748.0, "username": "zhangyy", "pwd": "827ccb0eea8a706c4c34a16891f84e7b", "state": 0, "deposit": 0, "role": "user", "credit_total": 15000, "num": 6222123409580001, "STATEMENT_DATE": 22, "REPAYMENT_DATE": 10}
