@@ -14,7 +14,11 @@ sys.path.append(MY_PATH)
 
 
 def show(page_num):
-    print(page_num, type(page_num))
+    # print(page_num, type(page_num))
+    """
+    当用户选择了信用卡中心，接收用户选择要干的事情编号，利用字典和反射执行函数
+    param page_num:用户选择的编号
+    """
     num_func = {
         "1": {"module": credit_api, "func": "draw_api"},
         "2": {"module": credit_api, "func": "transfer_api"},
