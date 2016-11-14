@@ -1,16 +1,18 @@
-import arrow
+import getpass
 import os
 import sys
-import getpass
+
+import arrow
+
+from conf import settings
+from modules.credit import auth
+from utils import utils
 
 ATM_PATH = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 # print(ATM_PATH)
 # print(os.path.isabs(ATM_PATH))
 sys.path.append(ATM_PATH)
-from modules.credit import auth
-from conf import settings
-from utils import utils
 
 
 DB_PATH = os.path.join(ATM_PATH, "db")
@@ -45,7 +47,7 @@ def login(username, password):
     global ADMIN_INFO
     admin_path = os.path.join(DB_PATH, "credit", "admin", "admin.json")
     ad_info = utils.load_file(admin_path)
-    #print(ad_info)
+    # print(ad_info)
     password = utils.encrypt(password)
     if ad_info.get(username):
         if ad_info[username]["lock_flag"] == 0:
