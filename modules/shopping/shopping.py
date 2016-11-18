@@ -6,7 +6,10 @@ import hashlib
 import json
 import re
 import os
-
+import sys
+ATM_PATH = os.path.dirname(os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(ATM_PATH)
 from utils import utils
 
 ATM_PATH = os.path.dirname(os.path.dirname(
@@ -30,32 +33,31 @@ def locking(username):
     utils.dump_to_file(ACC_PATH, acc)
 
 
-def acc_load(acc_file):
-    """
-    加载完整的账户文件内容
-    :param acc_file:账户文件
-    :return:返回账户信息
-    """
-    usrname = []
-    password = []
-    balance = []
-    locked_flag = []
-    with open(acc_file, "r") as f:
-        acc = json.load(f)
-        if len(acc["user"]) > 0:
-            usrname = acc["user"]
-            password = acc["pwd"]
-            balance = acc["balance"]
-            locked_flag = acc["locked_flag"]
-            return usrname, password, balance, locked_flag  # 返回4个列表对象
-        else:
-            return None, None, None, None
+# def acc_load(acc_file):
+#     """
+#     加载完整的账户文件内容
+#     :param acc_file:账户文件
+#     :return:返回账户信息
+#     """
+#     usrname = []
+#     password = []
+#     balance = []
+#     locked_flag = []
+#     with open(acc_file, "r") as f:
+#         acc = json.load(f)
+#         if len(acc["user"]) > 0:
+#             usrname = acc["user"]
+#             password = acc["pwd"]
+#             balance = acc["balance"]
+#             locked_flag = acc["locked_flag"]
+#             return usrname, password, balance, locked_flag  # 返回4个列表对象
+#         else:
+#             return None, None, None, None
 
 
-def register(acc_file, username, password):
+def register(username, password):
     """
     用户注册
-    :param acc_file:账户文件
     :param username:用户名
     :param password:密码
     :return:注册成功返回username，失败返回False
@@ -69,66 +71,58 @@ def register(acc_file, username, password):
         print("用户名只能为英文字母开头的数字、字母、下划线的组合！")
         return False
     else:
-        with open(acc_file, "r+") as f:
-            acc = json.load(f)
-            if username in acc["user"]:
-                print("用户名已存在！")
-                return False
-            else:
-                acc["user"].append(username)
-                acc["pwd"].append(m_password)
-                acc["locked_flag"].append(0)
-                acc["balance"].append(0)
-        with open(acc_file, "w") as f:
-            json.dump(acc, f, ensure_ascii=False)
-            print("注册成功！")
+        acc = utils.load_file(ACC_PATH)
+        if acc.get(username):
+            print("用户名已存在！")
+            return False
+        else:
+            acc[username] = {}
+            acc[username]["username"] = username
+            acc[username]["pwd"] = m_password
+            acc[username]["balance"] = 0
+            acc[username]["locked_flag"] = 0
+            utils.dump_to_file(ACC_PATH, acc)
             return username
 
 
-def login(acc_file, username, password):
+def login(username, password):
     """用户登录
     :param acc_file:账户文件
     :param username:用户名
     :param password:密码
     :return:成功-True，密码不对-False，用户不存在-None,已锁定-"locked"
     """
-    m = hashlib.md5()
-    m.update(bytes(password, encoding='utf-8'))
-    m_password = m.hexdigest()
-    user, pawd, bal, lockf = acc_load(acc_file)
-    if user is None:  # 用户名不存在
-        return None
-    elif username in user:  # 用户名存在
-        ind = user.index(username)
-        if m_password == pawd[ind]:
-            if lockf[ind] == 0:
-                return True  # 登陆成功返回True
-            else:
-                return "locked"
-        else:
-            return False  # 登陆失败返回False
+    password = utils.encrypt(password)
+    acc = utils.load_file(ACC_PATH)
+    if not acc.get(username):
+        return "用户名不存在！"
     else:
-        return None  # 用户不存在返回None
+        if username == acc[username]["username"] and\
+           password == acc[username]["pwd"]:
+            return acc[username]
+        else:
+            return "用户名或密码不正确"
 
 
-def showdir1(goods_file):
+def showdir1():
     """
     输出商品一级目录
     :param goods_file:接收存有商品数据的文件
     :return: 返回商品的一级目录
     """
-    dir_1 = []
-    with open(goods_file) as f:
-        if f:
-            goods = json.load(f)
-            for dir1 in goods:
-                dir_1.append(dir1)
-            return dir_1
-        else:
-            return None
+    goods_dict = utils.load_file(GOODS_PATH)
+    dir1 = str()
+    num = 1
+    for key in goods_dict:
+        dir1 += "%s: %s " % (num, key)
+        num += 1
+    chodir1 = input(dir1)
+    return chodir1
+
+showdir1()
 
 
-def showdir2(goods_file, dir_1, input_dir1_num):
+def showdir2(dir1):
     """
     输出商品小类
     :param goods_file:接收存有商品数据的文件
@@ -136,23 +130,7 @@ def showdir2(goods_file, dir_1, input_dir1_num):
     :param input_dir1:接收用户输入的一级目录
     :return:返回商品二级目录
     """
-    dir_2 = []
-    with open(goods_file, encoding="utf-8") as f:
-        if f:
-            goods = json.load(f)
-            if input_dir1_num.isdigit():
-                input_dir1_num = int(input_dir1_num)
-                if input_dir1_num < len(dir_1):
-                    input_dir1 = dir_1[input_dir1_num]
-                    for dir2 in goods[input_dir1]:
-                        dir_2.append(dir2)
-                    return dir_2
-                else:
-                    return False
-            else:
-                return False
-        else:
-            return None
+    goods_dict = utils.load_file(GOODS_PATH)
 
 
 def showgoods(goods_file, input_dir1_num, input_dir2_num, dir_1, dir_2):

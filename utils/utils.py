@@ -4,6 +4,7 @@ import json
 import os
 import hashlib
 import datetime
+import calendar
 
 
 def to_str(str_or_bytes):
@@ -64,7 +65,6 @@ def get_lastmonth(date):
     """获取上个月的今天"""
     year = date.year
     month = date.month
-    day = date.day
     if month == 1:
         month = 12
         year -= 1
