@@ -113,16 +113,18 @@ def showdir1():
     goods_dict = utils.load_file(GOODS_PATH)
     dir1 = str()
     num = 1
+    dir1_dict = {}
     for key in goods_dict:
         dir1 += "%s: %s " % (num, key)
+        dir1_dict[str(num)] = key
         num += 1
     chodir1 = input(dir1)
-    return chodir1
+    return showdir2(chodir1, dir1_dict)
 
 showdir1()
 
 
-def showdir2(dir1):
+def showdir2(dir1, dir1_dict):
     """
     输出商品小类
     :param goods_file:接收存有商品数据的文件
@@ -131,9 +133,22 @@ def showdir2(dir1):
     :return:返回商品二级目录
     """
     goods_dict = utils.load_file(GOODS_PATH)
+    dir2 = str()
+    dir2_info = goods_dict[dir1_dict[dir1]]
+    dir2_dict = {}
+    num = 1
+    for key in dir2_info:
+        dir2 += "%s: %s" % (num, key)
+        dir2_dict[str(num)] = key
+        num += 1
+    chodir2 = input(dir2)
+    if dir2_dict.get(chodir2):
+        return showgoods(dir1, chodir2, dir2_dict)
+    if chodir2 == "b":
+        return showdir1()
 
 
-def showgoods(goods_file, input_dir1_num, input_dir2_num, dir_1, dir_2):
+def showgoods(dir1, dir2, dir1_dict, dir2_dict):
     """
     输出商品信息
     :param goods_file:接收存有商品数据的文件
@@ -143,30 +158,33 @@ def showgoods(goods_file, input_dir1_num, input_dir2_num, dir_1, dir_2):
     :param dir_2:接收二级目录列表
     :return:返回商品信息
     """
-    product_list = []
-    with open(goods_file) as f:
-        if f:
-            goods = json.load(f)
-            if input_dir2_num.isdigit():
-                input_dir2_num = int(input_dir2_num)
-                input_dir1_num = int(input_dir1_num)
-                if input_dir2_num < len(dir_2):
-                    input_dir2 = dir_2[input_dir2_num]
-                    input_dir1 = dir_1[input_dir1_num]
-                    # for pro in goods[input_dir1][input_dir2]:
-                    # product_list.append(pro)
-                    #proinfo = goods[input_dir1][input_dir2]
-                    pro_dict = goods[input_dir1][input_dir2]
-                    return pro_dict
-                else:
-                    return False
-            else:
-                return False
-        else:
-            return None
+    goods_dict = utils.load_file(GOODS_PATH)
+    goods = str()
+    goods_info = goods_dict[dir1, dir2_dict[dir2]]
+    num = 1
+    good_dict = {}
+    for key in goods_info:
+        goods += "%s: %s,单价%s" % (num, key, goods_info[key]["price"])
+        good_dict[str(num)] = key
+    chogood = input("""输入编号将商品加入购物车
+    商品信息如下：
+    %s
+    按b返回上级菜单
+    """)
+    if chogood == "b":
+        return showdir2(dir1, dir1_dict)
+    if goods_info.get(good_dict[chogood]):
+        buy_num = input("请输入购买数量：")
+        return add_to_cart(dir1,
+                           dir2,
+                           dir1_dict,
+                           dir2_dict,
+                           chogood,
+                           good_dict,
+                           buy_num)
 
 
-def add_to_cart(goods_file, username, input_dir1_num, input_dir2_num, input_pro_num, input_pro_cou, cart):
+def add_to_cart(dir1, dir2, dir1_dict, dir2_dict, chogood, good_dict, buy_num):
     """
     将商品添加至购物车
     :param goods_file:商品数据文件
@@ -177,19 +195,7 @@ def add_to_cart(goods_file, username, input_dir1_num, input_dir2_num, input_pro_
     :param input_pro_cou:接收用户输入的购买数量
     :return:添加成功-True，商品编号不正确-False，库存不够-"loq"
     """
-    input_dir1_num = int(input_dir1_num)
-    input_dir2_num = int(input_dir2_num)
-    if input_pro_cou.isdigit():
-        input_pro_cou = int(input_pro_cou)
-    else:
-        return 0  # 数量不是数字
-    with open(goods_file) as f:
-        goods = json.load(f)
-        dir1_list = list(goods.keys())
-        dir1 = dir1_list[input_dir1_num]
-        dir2_list = list(goods[dir1].keys())
-        dir2 = dir2_list[input_dir2_num]
-        pro_list = list(goods[dir1][dir2].keys())
+    goods_dict = utils.load_file(GOODS_PATH)
     if input_pro_num.isdigit():
         input_pro_num = int(input_pro_num)
         if input_pro_num < len(pro_list):
