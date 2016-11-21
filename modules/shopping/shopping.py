@@ -4,13 +4,14 @@ import datetime
 import getpass
 import hashlib
 import json
-import re
 import os
+import re
 import sys
 ATM_PATH = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(ATM_PATH)
 from utils import utils
+
 
 ATM_PATH = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
@@ -104,24 +105,41 @@ def login(username, password):
             return "用户名或密码不正确"
 
 
-def showdir1():
+def showgoods(dir1, dir2, dir1_dict, dir2_dict):
     """
-    输出商品一级目录
+    输出商品信息
     :param goods_file:接收存有商品数据的文件
-    :return: 返回商品的一级目录
+    :param input_dir1_num:接收用户选择的一级目录
+    :param input_dir2_num:接收用户选择的二级目录
+    :param dir_1:接收一级目录列表
+    :param dir_2:接收二级目录列表
+    :return:返回商品信息
     """
     goods_dict = utils.load_file(GOODS_PATH)
-    dir1 = str()
+    goods = str()
+    goods_info = goods_dict[dir1_dict[dir1]][dir2_dict[dir2]]
     num = 1
-    dir1_dict = {}
-    for key in goods_dict:
-        dir1 += "%s: %s " % (num, key)
-        dir1_dict[str(num)] = key
+    good_dict = {}
+    for key in goods_info:
+        goods += "%s: %s,单价%s " % (num, key, goods_info[key]["price"])
+        good_dict[str(num)] = key
         num += 1
-    chodir1 = input(dir1)
-    return showdir2(chodir1, dir1_dict)
-
-showdir1()
+    chogood = input("""输入编号将商品加入购物车
+    商品信息如下：
+    %s
+    按b返回上级菜单
+    """ % (goods))
+    if chogood == "b":
+        return showdir2(dir1, dir1_dict)
+    if goods_info.get(good_dict[chogood]):
+        buy_num = input("请输入购买数量：")
+        return add_to_cart(dir1,
+                           dir2,
+                           dir1_dict,
+                           dir2_dict,
+                           chogood,
+                           good_dict,
+                           buy_num)
 
 
 def showdir2(dir1, dir1_dict):
@@ -138,50 +156,33 @@ def showdir2(dir1, dir1_dict):
     dir2_dict = {}
     num = 1
     for key in dir2_info:
-        dir2 += "%s: %s" % (num, key)
+        dir2 += "%s: %s " % (num, key)
         dir2_dict[str(num)] = key
         num += 1
     chodir2 = input(dir2)
     if dir2_dict.get(chodir2):
-        return showgoods(dir1, chodir2, dir2_dict)
+        print(dir2_dict)
+        return showgoods(dir1, chodir2, dir1_dict, dir2_dict)
     if chodir2 == "b":
         return showdir1()
 
 
-def showgoods(dir1, dir2, dir1_dict, dir2_dict):
+def showdir1():
     """
-    输出商品信息
+    输出商品一级目录
     :param goods_file:接收存有商品数据的文件
-    :param input_dir1_num:接收用户选择的一级目录
-    :param input_dir2_num:接收用户选择的二级目录
-    :param dir_1:接收一级目录列表
-    :param dir_2:接收二级目录列表
-    :return:返回商品信息
+    :return: 返回商品的一级目录
     """
     goods_dict = utils.load_file(GOODS_PATH)
-    goods = str()
-    goods_info = goods_dict[dir1, dir2_dict[dir2]]
+    dir1 = str()
     num = 1
-    good_dict = {}
-    for key in goods_info:
-        goods += "%s: %s,单价%s" % (num, key, goods_info[key]["price"])
-        good_dict[str(num)] = key
-    chogood = input("""输入编号将商品加入购物车
-    商品信息如下：
-    %s
-    按b返回上级菜单
-    """)
-    if chogood == "b":
-        return showdir2(dir1, dir1_dict)
-    if goods_info.get(good_dict[chogood]):
-        buy_num = input("请输入购买数量：")
-        return add_to_cart(dir1,
-                           dir2,
-                           dir1_dict,
-                           dir2_dict,
-                           chogood,
-                           good_dict,
-                           buy_num)
+    dir1_dict = {}
+    for key in goods_dict:
+        dir1 += "%s: %s " % (num, key)
+        dir1_dict[str(num)] = key
+        num += 1
+    chodir1 = input(dir1)
+    return showdir2(chodir1, dir1_dict)
 
 
 def add_to_cart(dir1, dir2, dir1_dict, dir2_dict, chogood, good_dict, buy_num):
@@ -376,201 +377,5 @@ def showcart(cart):
     else:
         return None
 
-# if __name__ == "__main__":
-#     goods_file = ("goods.json")
-#     acc_file = ("account.json")
-#     logfile = ("shop.log")
-#     cart = dict()
-#     print("欢迎来到逆光穿行购物商城，祝您购物愉快！".center(40, "*"))
-#     exit_flag1 = 1
-#     exit_flag2 = 1
-#     exit_flag3 = 1
-#     login_flag = 0
-#     while exit_flag1:
-#         d1_list = showdir1(goods_file)
-#         if d1_list:
-#             while exit_flag2:
-#                 print("商品大类".center(30, "*"))
-#                 for i1, d1 in enumerate(d1_list):
-#                     print("编号：%s,分类:%s" % (i1, d1))
-#                 print("商品大类".center(30, "*"))
-#                 input_dir1_num = input("请输入商品大类编号【q-退出】-->：").strip()
-#                 if input_dir1_num == "q":
-#                     exit_flag1 = 0
-#                     exit_flag2 = 0
-#                     showcart(cart)
-#                 else:
-#                     d2_list = showdir2(goods_file, d1_list, input_dir1_num)
-#                     if d2_list is False:
-#                         print("请输入正确的编号！")
-#                         continue
-#                     elif d2_list is None:
-#                         print("商品还没准备好！")
-#                         break
-#                     else:
-#                         while exit_flag3:
-#                             print("商品小类".center(30, "*"))
-#                             for i2, d2 in enumerate(d2_list):
-#                                 print("编号：%s,分类:%s" % (i2, d2))
-#                             print("商品小类".center(30, "*"))
-#                             input_dir2_num = input(
-#                                 "请输入商品小类编号【b-返回上级，q-退出】：-->").strip()
-#                             if input_dir2_num == "b":
-#                                 break
-#                             elif input_dir2_num == "q":
-#                                 exit_flag3 = 0
-#                                 exit_flag2 = 0
-#                                 exit_flag1 = 0
-#                                 showcart(cart)
-#                             else:
-#                                 exit_flag4 = 1
-#                                 while exit_flag4:
-#                                     pro_list = showgoods(
-#                                         goods_file, input_dir1_num,
-#                                         input_dir2_num,
-#                                         d1_list, d2_list)
-#                                     if pro_list is False:
-#                                         print("请输入正确的编号！")
-#                                         continue
-#                                     elif pro_list == None:
-#                                         print("抱歉商品还没准备好！")
-#                                         break
-#                                     else:
-#                                         print("商品信息".center(30, "*"))
-#                                         for pro_ind, pro in enumerate(pro_list):
-#                                             price = pro_list[pro][0]
-#                                             p_c = pro_list[pro][1]
-#                                             print("商品编号:%s.%s,单价:%s,库存数量%s" %
-#                                                   (pro_ind, pro, price, p_c))
-#                                         print("商品信息".center(30, "*"))
-#                                         input_pro_num = input(
-#                                             "请输入商品编号将商品添加到购物车【b-返回上一级，q-退出】:-->").strip()
 
-#                                         user_login_failcount = {
-#                                             "user": [], "failcount": []}
-#                                         if input_pro_num == "b":
-#                                             break
-#                                         elif input_pro_num == "q":
-#                                             exit_flag4 = 0
-#                                             exit_flag3 = 0
-#                                             exit_flag2 = 0
-#                                             exit_flag1 = 0
-#                                             showcart(cart)
-#                                         else:
-#                                             input_pro_cou = input(
-#                                                 "请输入购买数量:-->")
-#                                             while login_flag == 0:
-#                                                 input_l_or_r = input(
-#                                                     "加入购物车前必须登录，r-注册,任意键登录--->")
-#                                                 input_username = input(
-#                                                     "请输入用户名:-->").strip()
-#                                                 input_password = getpass.getpass(
-#                                                     "请输入密码：-->").strip()
-#                                                 if input_l_or_r == "r":
-#                                                     register(
-#                                                         acc_file, input_username,
-#                                                         input_password)
-#                                                 else:
-#                                                     if input_username in user_login_failcount["user"]:
-#                                                         fc_ind = user_login_failcount[
-#                                                             "user"].index(input_username)
-#                                                         fc = user_login_failcount[
-#                                                             "failcount"][fc_ind]
-#                                                     else:
-#                                                         user_login_failcount[
-#                                                             "user"].append(input_username)
-#                                                         user_login_failcount[
-#                                                             "failcount"].append(0)
-#                                                         fc = user_login_failcount[
-#                                                             "failcount"][0]
-#                                                     if fc < 2:
-#                                                         login_ret = login(
-#                                                             acc_file, input_username, input_password)
-#                                                         if login_ret:
-#                                                             print("登陆成功！")
-#                                                             login_flag = 1
-#                                                             load_log(
-#                                                                 input_username, logfile)
-#                                                         elif login_ret is None:
-#                                                             print("用户名不存在！")
-#                                                             continue
-#                                                         elif login_ret == "locked":
-#                                                             print("用户处于锁定状态！")
-#                                                             continue
-#                                                         else:
-#                                                             print("用户名或密码错误！")
-#                                                             ind_fc = user_login_failcount[
-#                                                                 "user"].index(input_username)
-#                                                             user_login_failcount[
-#                                                                 "failcount"][ind_fc] += 1
-#                                                             continue
-#                                                     else:
-#                                                         print(
-#                                                             "尝试的次数过多，用户已被锁定！")
-#                                                         locking(
-#                                                             account_file, input_username)
-#                                                         exit_flag4 = 0
-#                                                         exit_flag3 = 0
-#                                                         exit_flag2 = 0
-#                                                         exit_flag1 = 0
-#                                                         showcart(cart)
-#                                             else:
-#                                                 # goods_file,username,input_dir1_num,input_dir2_num,input_pro_num,input_pro_cou,cart
-#                                                 a_ret = add_to_cart(
-#                                                     goods_file, input_username, input_dir1_num, input_dir2_num, input_pro_num, input_pro_cou, cart)
-#                                                 if a_ret == "loq":
-#                                                     print("购买数量大于库存，无法添加至购物车！")
-#                                                     continue
-#                                                 elif a_ret == False:
-#                                                     print("请输入正确的编号！")
-#                                                     continue
-#                                                 elif a_ret == 0:
-#                                                     print("购买数量必须是整数！")
-#                                                     continue
-#                                                 else:
-#                                                     print("您已成功将%s个%s加入购物车！" %
-#                                                           (a_ret[1], a_ret[0]))
-#                                                     pay_flag = 1
-#                                                     while pay_flag == 1:
-#                                                         pay_or_cbuy = input(
-#                                                             "p-去结算，任意键继续购物！")
-#                                                         if pay_or_cbuy == "p":
-#                                                             p_ret = pay(
-#                                                                 goods_file, acc_file, input_username, cart)
-#                                                             #:return:成功-Ture，库存数量不足-"loq",余额不足-"lob"
-#                                                             if p_ret == True:
-#                                                                 print("支付成功！")
-#                                                                 pay_flag = 0
-#                                                                 shopping_log(
-#                                                                     cart, input_username, logfile)
-#                                                                 load_log(
-#                                                                     input_username, logfile)
-#                                                             elif type(p_ret[0]) == int:
-#                                                                 print("您的余额为%s，订单金额为%s,不足以支付您的订单！" % (
-#                                                                     p_ret[0], p_ret[1]))
-#                                                                 while True:
-#                                                                     input_r = input(
-#                                                                         "r-充值,任意键-退出 -->")
-#                                                                     if input_r == "r":
-#                                                                         input_r_amount = input(
-#                                                                             "请输入充值金额！")
-#                                                                         r_ret = recharge(
-#                                                                             acc_file, input_username, input_r_amount)
-#                                                                         if r_ret == True:
-#                                                                             print(
-#                                                                                 "充值成功！")
-#                                                                             break
-#                                                                         else:
-#                                                                             print(
-#                                                                                 "充值失败！")
-#                                                                             continue
-#                                                                     else:
-#                                                                         showcart(
-#                                                                             cart)
-#                                                                         exit(
-#                                                                             "谢谢惠顾！")
-#                                                         else:
-#                                                             break
-#         else:
-#             print("没有商品谢谢光临！")
-#             break
+showdir1()

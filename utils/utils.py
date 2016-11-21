@@ -31,7 +31,7 @@ def load_file(filename):
 
 def dump_to_file(filename, obj):
     with open(filename, "w", encoding="utf-8") as f:
-        json.dump(obj, f)
+        json.dump(obj, f, sort_keys=True, ensure_ascii=False)
 
 
 def to_num(str):
