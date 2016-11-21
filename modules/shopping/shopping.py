@@ -182,6 +182,8 @@ def showgoods(dir1, dir2, dir1_dict, dir2_dict):
                            chogood,
                            good_dict,
                            buy_num)
+    else:
+        return "没这个选项！"
 
 
 def add_to_cart(dir1, dir2, dir1_dict, dir2_dict, chogood, good_dict, buy_num):
