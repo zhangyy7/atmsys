@@ -24,14 +24,29 @@ def to_bytes(str_or_bytes):
 
 
 def load_file(filename):
-    with open(filename, encoding="utf-8") as f:
-        obj = json.load(f)
-    return obj
+    if os.path.isfile(filename):
+        with open(filename, encoding="utf-8") as f:
+            obj = json.load(f)
+        return obj
+    else:
+        return "文件不存在"
+
+
+def open_file(filename, mo):
+    if os.path.isfile(filename):
+        f = open(filename, mo, encoding="utf-8")
+        return f
+    else:
+        pass
 
 
 def dump_to_file(filename, obj):
     with open(filename, "w", encoding="utf-8") as f:
+<<<<<<< HEAD
         json.dump(obj, f, sort_keys=True, ensure_ascii=False)
+=======
+        json.dump(obj, f, ensure_ascii=False, sort_keys=True)
+>>>>>>> bc5b0cfaccdaeab1bd40e4e90c3a38bf1ba55040
 
 
 def to_num(str):

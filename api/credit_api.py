@@ -23,3 +23,7 @@ def repayment_api():
     inp_cardnum = input("请输入卡号：>>")
     inp_amount = input("请输入还款金额：>>")
     users.repayment(inp_cardnum, inp_amount)
+
+
+def spend_api(amount):
+    pass
