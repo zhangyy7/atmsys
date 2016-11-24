@@ -1,7 +1,9 @@
 import os
 import sys
+import getpass
 
 from modules.credit import users
+from utils import utils
 
 MY_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(MY_PATH)
@@ -26,4 +28,7 @@ def repayment_api():
 
 
 def spend_api(amount):
-    pass
+    card_num = input("请输入信用卡卡号：")
+    card_pwd = getpass.getpass("请输入支付密码：")
+    card_pwd = utils.encrypt(card_pwd)
+    users.spend(card_num, card_pwd, amount)

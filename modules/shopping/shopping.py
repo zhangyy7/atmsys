@@ -5,11 +5,12 @@ import hashlib
 import json
 import os
 import re
-import sys
-ATM_PATH = os.path.dirname(os.path.dirname(
-    os.path.dirname(os.path.abspath(__file__))))
-sys.path.append(ATM_PATH)
+# import sys
+# ATM_PATH = os.path.dirname(os.path.dirname(
+#     os.path.dirname(os.path.abspath(__file__))))
+# sys.path.append(ATM_PATH)
 from utils import utils
+from api import credit_api
 
 
 ATM_PATH = os.path.dirname(os.path.dirname(
@@ -34,28 +35,6 @@ def locking(username):
     user_info = acc[username]
     user_info["locked_flag"] = 1
     utils.dump_to_file(ACC_PATH, acc)
-
-
-# def acc_load(acc_file):
-#     """
-#     加载完整的账户文件内容
-#     :param acc_file:账户文件
-#     :return:返回账户信息
-#     """
-#     usrname = []
-#     password = []
-#     balance = []
-#     locked_flag = []
-#     with open(acc_file, "r") as f:
-#         acc = json.load(f)
-#         if len(acc["user"]) > 0:
-#             usrname = acc["user"]
-#             password = acc["pwd"]
-#             balance = acc["balance"]
-#             locked_flag = acc["locked_flag"]
-#             return usrname, password, balance, locked_flag  # 返回4个列表对象
-#         else:
-#             return None, None, None, None
 
 
 def register(username, password):
@@ -126,7 +105,6 @@ def showgoods(dir1, dir2, dir1_dict, dir2_dict):
         goods += "%s: %s,单价%s " % (num, key, goods_info[key]["price"])
         good_dict[str(num)] = key
         num += 1
-<<<<<<< HEAD
     chogood = input("""输入编号将商品加入购物车
     商品信息如下：
     %s
@@ -143,10 +121,8 @@ def showgoods(dir1, dir2, dir1_dict, dir2_dict):
                            chogood,
                            good_dict,
                            buy_num)
-=======
-    chodir1 = input(dir1)
-    return showdir2(chodir1, dir1_dict)
->>>>>>> bc5b0cfaccdaeab1bd40e4e90c3a38bf1ba55040
+    else:
+        return "没有这个页面"
 
 
 def showdir2(dir1, dir1_dict):
@@ -184,7 +160,6 @@ def showdir1():
     :return: 返回商品的一级目录
     """
     goods_dict = utils.load_file(GOODS_PATH)
-<<<<<<< HEAD
     dir1 = str()
     num = 1
     dir1_dict = {}
@@ -194,34 +169,6 @@ def showdir1():
         num += 1
     chodir1 = input(dir1)
     return showdir2(chodir1, dir1_dict)
-=======
-    goods = str()
-    goods_info = goods_dict[dir1_dict[dir1]][dir2_dict[dir2]]
-    num = 1
-    good_dict = {}
-    for key in goods_info:
-        goods += "%s: %s,单价%s " % (num, key, goods_info[key]["price"])
-        good_dict[str(num)] = key
-        num += 1
-    chogood = input("""输入编号将商品加入购物车
-    商品信息如下：
-    %s
-    按b返回上级菜单
-    """ % (goods))
-    if chogood == "b":
-        return showdir2(dir1, dir1_dict)
-    if goods_info.get(good_dict[chogood]):
-        buy_num = input("请输入购买数量：")
-        return add_to_cart(dir1,
-                           dir2,
-                           dir1_dict,
-                           dir2_dict,
-                           chogood,
-                           good_dict,
-                           buy_num)
-    else:
-        return "没有这个页面"
->>>>>>> bc5b0cfaccdaeab1bd40e4e90c3a38bf1ba55040
 
 
 def add_to_cart(dir1, dir2, dir1_dict, dir2_dict, chogood, good_dict, buy_num):
@@ -381,5 +328,4 @@ def settle():
     for good in CART:
         amount = CART[good]["price"] * CART[good]["qty"]
         total_amount += amount
-    return total_amount
-
+    return credit_api.spend_api(total_amount)
