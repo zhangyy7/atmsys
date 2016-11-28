@@ -26,7 +26,7 @@ def show(page_num):
     }
     # a = hasattr(credit_api, "draw_api")
     # print(a)
-    print(num_func.get(page_num))
+    # print(num_func.get(page_num))
     if num_func.get(page_num):
         if hasattr(num_func[page_num]["module"], num_func[page_num]["func"]):
             obj = getattr(num_func[page_num]["module"],
