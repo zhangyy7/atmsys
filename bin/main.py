@@ -9,19 +9,22 @@ from conf import templates as tl
 
 def main():
     menu = {
-        "1": {"module": ct, "func": "main"},
-        "2": {"module": sp, "func": "main"},
+        "1": {"module": sp, "func": "main"},
+        "2": {"module": ct, "func": "main"},
         "3": {"module": sys, "func": "exit"}
     }
+    print("开始出账")
     system.charge_out()
-    c_menu = input(tl.format_page(tl.INDEX_MEMU))
-    if menu.get(c_menu):
-        if hasattr(menu[c_menu]["module"], menu[c_menu]["func"]):
-            func = getattr(menu[c_menu]["module"], menu[c_menu]["func"])
-            func()
+    print("出账完毕")
+    while True:
+        c_menu = input(tl.format_page(tl.INDEX_MEMU))
+        if menu.get(c_menu):
+            if hasattr(menu[c_menu]["module"], menu[c_menu]["func"]):
+                func = getattr(menu[c_menu]["module"], menu[c_menu]["func"])
+                func()
+            else:
+                print("没有这个页面！")
+                return main()
         else:
             print("没有这个页面！")
             return main()
-    else:
-        print("没有这个页面！")
-        return main()

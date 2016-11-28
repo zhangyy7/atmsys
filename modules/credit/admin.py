@@ -5,7 +5,6 @@ import sys
 import arrow
 
 from conf import settings
-from modules.credit import auth
 from utils import utils
 
 ATM_PATH = os.path.dirname(os.path.dirname(
@@ -79,7 +78,7 @@ def lock(username):
         return "不存在此管理员"
 
 
-@auth.auth(check_login)
+@utils.auth(check_login)
 def create_account(card_num,
                    username,
                    role,
@@ -130,14 +129,14 @@ def create_account(card_num,
         utils.dump_to_file(card_path, card)
 
 
-@auth.auth(check_login)
+@utils.auth(check_login)
 def del_account(card_num):
     num_path = os.path.join(USER_PATH, card_num)
     acc_path = os.path.join(num_path, "account.json")
-    #name_path = os.path.join(USER_PATH, "username.json")
+    # name_path = os.path.join(USER_PATH, "username.json")
     sdate_path = os.path.join(USER_PATH, "usersdate.json")
     acc = utils.load_file(acc_path)
-    #name_list = utils.load_file(name_path)
+    # name_list = utils.load_file(name_path)
     sdate = utils.load_file(sdate_path)
     balance = acc["credit_balance"]
     if balance < acc["credit_total"]:
@@ -152,7 +151,7 @@ def del_account(card_num):
         utils.dump_to_file(sdate_path, sdate)
 
 
-@auth.auth(check_login)
+@utils.auth(check_login)
 def modify_account(card_num, new_total=None, new_date=None, new_state=None):
     acc_path = os.path.join(USER_PATH, card_num, "account.json")
     acc = utils.load_file(acc_path)
@@ -163,7 +162,7 @@ def modify_account(card_num, new_total=None, new_date=None, new_state=None):
         acc["credit_balance"] += ran
     if new_date:
         acc["STATEMENT_DATE"] = new_date
-    if state:
+    if new_state:
         acc["state"] = new_state
     utils.dump_to_file(acc_path)
 

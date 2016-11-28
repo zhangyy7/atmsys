@@ -5,6 +5,7 @@ import os
 import hashlib
 import datetime
 import calendar
+import functools
 
 
 def to_str(str_or_bytes):
@@ -84,3 +85,16 @@ def get_lastmonth(date):
     ndays = calendar.monthrange(year, month)[1]
     last_month = date - datetime.timedelta(days=ndays)
     return last_month
+
+
+def auth(before_func, after_func=None):
+    def outer(main_func):
+        @functools.wraps(main_func)
+        def warpper(*args, **kwargs):
+            before_func()
+            print("开始执行被装饰的函数")
+            main_result = main_func(*args, **kwargs)
+            if not main_result:
+                return main_result
+        return warpper
+    return outer

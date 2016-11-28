@@ -8,9 +8,6 @@ import sys
 
 import arrow
 
-MY_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(MY_PATH)
-
 
 # 主菜单
 INDEX_MEMU = """

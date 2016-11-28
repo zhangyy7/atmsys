@@ -5,10 +5,7 @@ import hashlib
 import json
 import os
 import re
-# import sys
-# ATM_PATH = os.path.dirname(os.path.dirname(
-#     os.path.dirname(os.path.abspath(__file__))))
-# sys.path.append(ATM_PATH)
+
 from utils import utils
 from api import credit_api
 
