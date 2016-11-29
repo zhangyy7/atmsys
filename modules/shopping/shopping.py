@@ -8,6 +8,7 @@ import re
 
 from utils import utils
 from api import credit_api
+from bin import shopping as sp
 
 
 ATM_PATH = os.path.dirname(os.path.dirname(
@@ -165,6 +166,8 @@ def showdir1():
         dir1_dict[str(num)] = key
         num += 1
     chodir1 = input(dir1)
+    if chodir1 == "b":
+        return sp.main()
     return showdir2(chodir1, dir1_dict)
 
 

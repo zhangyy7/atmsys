@@ -1,16 +1,11 @@
 import os
-import sys
 
-ATM_PATH = os.path.dirname(os.path.dirname(
-    os.path.dirname(os.path.abspath(__file__))))
-# print(ATM_PATH)
-sys.path.append(ATM_PATH)
-from modules.credit import auth
 from conf import settings
 from utils import utils
 from modules.credit import system
 
-
+ATM_PATH = os.path.dirname(os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__))))
 DB_PATH = os.path.join(ATM_PATH, "db")
 CREDIT_PATH = os.path.join(DB_PATH, "credit")
 USER_PATH = os.path.join(CREDIT_PATH, "users")
@@ -75,7 +70,7 @@ def lock(username):
     utils.dump_to_file(acc_path, acc_info)
 
 
-@auth.auth(check_login)
+@utils.auth(check_login)
 def draw_cash(pwd, amount_of_money):
     """
     取现
@@ -115,7 +110,7 @@ def draw_cash(pwd, amount_of_money):
             return "您的账户已冻结"
 
 
-@auth.auth(check_login)
+@utils.auth(check_login)
 def transfer_accounts(to_num, amount_of_money):
     """转账"""
     global USER_INFO
@@ -159,7 +154,7 @@ def transfer_accounts(to_num, amount_of_money):
         return "余额不足！"
 
 
-@auth.auth(check_login)
+@utils.auth(check_login)
 def spend(card_num, card_pwd, amount_of_money):
     """消费"""
     acc_path = os.path.join(USER_PATH, card_num, "account.json")
@@ -178,7 +173,7 @@ def spend(card_num, card_pwd, amount_of_money):
         return "您的账户已冻结"
 
 
-@auth.auth(check_login)
+@utils.auth(check_login)
 def repayment(card_num, amount_of_money):
     """还款"""
     acc_path = os.path.join(USER_PATH, card_num, "account.json")
@@ -194,7 +189,7 @@ def repayment(card_num, amount_of_money):
     system.recode_trade(card_num, "0", "0", amount_of_money)
 
 
-@auth.auth(check_login)
+@utils.auth(check_login)
 def deposit(card_num, amount_of_money):
     """存款"""
     acc_path = os.path.join(USER_PATH, card_num, "account.json")
@@ -204,7 +199,7 @@ def deposit(card_num, amount_of_money):
     system.recode_trade(card_num, "0", "0", amount_of_money)
 
 
-@auth.auth(check_login)
+@utils.auth(check_login)
 def billing_query(card_num, date):
     """账单查询"""
     bill_path = os.path.join(USER_PATH, card_num, "bill.json")

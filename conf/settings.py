@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 # -*-coding:utf-8 -*-
-import os
-import sys
 
 # 日息费率
 EXPIRE_DAY_RATE = 0.0005
@@ -16,5 +14,5 @@ REPAYMENT_DATE = 10
 # 免息期
 GRACE_PERIOD = 48
 
-#默认密码
+# 默认密码
 DEFAULT_PWD = "12345"

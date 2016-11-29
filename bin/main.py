@@ -25,6 +25,8 @@ def main():
             else:
                 print("没有这个页面！")
                 return main()
+        if c_menu == "b":
+            continue
         else:
             print("没有这个页面！")
             return main()

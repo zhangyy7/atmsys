@@ -1,6 +1,5 @@
 import getpass
 import os
-import sys
 
 import arrow
 
@@ -9,9 +8,6 @@ from utils import utils
 
 ATM_PATH = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
-# print(ATM_PATH)
-# print(os.path.isabs(ATM_PATH))
-sys.path.append(ATM_PATH)
 
 
 DB_PATH = os.path.join(ATM_PATH, "db")
@@ -81,7 +77,7 @@ def lock(username):
 @utils.auth(check_login)
 def create_account(card_num,
                    username,
-                   role,
+                   role="user",
                    credit_total=settings.CREDIT_TOTAL,
                    pwd=settings.DEFAULT_PWD,
                    statement_date=settings.STATEMENT_DATE):
@@ -165,9 +161,3 @@ def modify_account(card_num, new_total=None, new_date=None, new_state=None):
     if new_state:
         acc["state"] = new_state
     utils.dump_to_file(acc_path)
-
-
-if __name__ == "__main__":
-    create_account("6222123409580004",
-                   "zhangyy4",
-                   "user")

@@ -18,7 +18,8 @@ def main():
         "1": {"module": ca, "func": "draw_api"},
         "2": {"module": ca, "func": "transfer_api"},
         "3": {"module": ca, "func": "repayment"},
-        "4": {"module": sys, "func": "eixt"}
+        "4": {"module": ca, "func": "admin_api"},
+        "5": {"module": sys, "func": "eixt"}
     }
     p_num = input(tl.format_page(tl.INDEX_ATM))
     if menu.get(p_num):
