@@ -1,4 +1,5 @@
 import os
+import getpass
 
 from conf import settings
 from utils import utils
@@ -23,7 +24,7 @@ def login_page():
     menu = ">>>>>>>请登录<<<<<<<<"
     print(menu)
     inp_user = input("请输入您的卡号：")
-    inp_pwd = input("请输入您的密码：")
+    inp_pwd = getpass.getpass("请输入您的密码：")
     return login(inp_user, inp_pwd)
 
 

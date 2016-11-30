@@ -1,20 +1,26 @@
 {
-    "zhangyy": {
-        "username": "zhangyy",
-        "pwd": "827ccb0eea8a706c4c34a16891f84e7b",
+    "zhang123": {
         "balance": 0,
-        "locked_flag": 0
-    },
-    "zhangyy7": {
-        "username": "zhangyy7",
-        "pwd": "827ccb0eea8a706c4c34a16891f84e7b",
-        "balance": 0,
-        "locked_flag": 0
+        "locked_flag": 0,
+        "pwd": "e10adc3949ba59abbe56e057f20f883e",
+        "username": "zhang123"
     },
     "zhangsan": {
-        "username": "zhangsan",
-        "pwd": "827ccb0eea8a706c4c34a16891f84e7b",
         "balance": 0,
-        "locked_flag": 0
+        "locked_flag": 0,
+        "pwd": "827ccb0eea8a706c4c34a16891f84e7b",
+        "username": "zhangsan"
+    },
+    "zhangyy": {
+        "balance": 0,
+        "locked_flag": 0,
+        "pwd": "827ccb0eea8a706c4c34a16891f84e7b",
+        "username": "zhangyy"
+    },
+    "zhangyy7": {
+        "balance": 0,
+        "locked_flag": 0,
+        "pwd": "827ccb0eea8a706c4c34a16891f84e7b",
+        "username": "zhangyy7"
     }
 }

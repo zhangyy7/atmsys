@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 import re
+import getpass
 
 from utils import utils
 from api import credit_api
@@ -82,6 +83,22 @@ def login(username, password):
             return acc[username]
         else:
             return "用户名或密码不正确"
+
+
+def login_page():
+    menu = ">>>>>>>请登录<<<<<<<<"
+    print(menu)
+    inp_user = input("请输入您的账号：")
+    inp_pwd = getpass.getpass("请输入您的密码：")
+    return login(inp_user, inp_pwd)
+
+
+def check_login():
+    global USER_INFO
+    if USER_INFO["username"]:
+        return
+    else:
+        return login_page()
 
 
 def showgoods(dir1, dir2, dir1_dict, dir2_dict):
@@ -243,6 +260,7 @@ def add_to_cart(dir1, dir2, dir1_dict, dir2_dict, chogood, good_dict, buy_num):
 #         return [balance, bill]  # 返回余额不足
 
 
+@utils.auth(check_login)
 def recharge(acc_file, username, amount):
     """
     充值
@@ -264,6 +282,7 @@ def recharge(acc_file, username, amount):
         return False
 
 
+@utils.auth(check_login)
 def shopping_log():
     """
     购物历史记录
@@ -282,21 +301,24 @@ def shopping_log():
         f.write(info)
 
 
-def load_log(username, trade_path):
+@utils.auth(check_login)
+def load_log():
     """
     加载购物历史
     :param username:用户名
     :param trade_path:购物历史文件
     :return:有历史返回购物历史，无历史返回None
     """
-    with open(trade_path, 'r+') as f:
+    global USER_INFO, TRADE_PATH
+    with open(TRADE_PATH, 'r+') as f:
         for line in f:
             log = line.strip().split("|")
-            if log[0] == username:
+            if log[0] == USER_INFO["username"]:
                 print("%s，您在%s购买了%s，单价%s，数量%s" %
                       (log[0], log[1], log[2], log[3], log[4]))
 
 
+@utils.auth(check_login)
 def showcart():
     """
     输入购物车信息
@@ -322,6 +344,7 @@ def showcart():
         return showcart()
 
 
+@utils.auth(check_login)
 def settle():
     global CART
     total_amount = 0

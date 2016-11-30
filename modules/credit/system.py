@@ -1,5 +1,4 @@
 import os
-import sys
 
 import arrow
 
@@ -8,10 +7,6 @@ from utils import utils
 
 ATM_PATH = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
-# print(ATM_PATH)
-sys.path.append(ATM_PATH)
-
-
 DB_PATH = os.path.join(ATM_PATH, "db")
 CREDIT_PATH = os.path.join(DB_PATH, "credit")
 USER_PATH = os.path.join(CREDIT_PATH, "users")
@@ -43,19 +38,19 @@ def charge_out():
     sdate_path = os.path.join(USER_PATH, "usersdate.json")
     usersdate_dict = utils.load_file(sdate_path)
     pending_cardnum = usersdate_dict[str(TODAY.day)]
-    last_month = TODAY.replace(months=-1)
-    str_currentmonth = TODAY.strftime("%Y%m")
-    str_lastmonth = last_month.strftime("%Y%m")
+    # last_month = TODAY.replace(months=-1)
+    # str_currentmonth = TODAY.strftime("%Y%m")
+    # str_lastmonth = last_month.strftime("%Y%m")
     if not pending_cardnum:
         return "今天没有要出账的账户"
     else:
-        for cardnum in peding_cardnum:
-            num_path = os.path.join(USER_PATH, card_num)
+        for cardnum in pending_cardnum:
+            num_path = os.path.join(USER_PATH, cardnum)
             acc_path = os.path.join(num_path, "account.json")
             bill_path = os.path.join(num_path, "bill.json")
             bill_data = utils.load_file(bill_path)
             acc = utils.load_file(acc_path)
-            #trade_data = utils.load_file(trade_path)
+            # trade_data = utils.load_file(trade_path)
             bill_temp = acc["credit_total"] - acc["credit_balance"]
             now = arrow.now().for_json()
             if bill_temp > 0:
